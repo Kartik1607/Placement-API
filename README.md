@@ -26,7 +26,7 @@ Part of Nagarro CLP.
     * Explore the functionality and how to use.
     * Implement the error handling, with proper Response codes and intuitive
 Error messages.
-  * ImplementingLoggingintheapplication
+  * Implementing Logging in the application
     * Find a suitable logging library for NodeJS.
     * Explore the functionality and how to use.
     * Implement logging, with proper timestamp, log type (Error, Warning or Information) and an error message.
