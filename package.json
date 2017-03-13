@@ -1,0 +1,16 @@
+{
+  "name": "nagarro",
+  "version": "1.0.0",
+  "description": "This is a sample app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kartik",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.2",
+    "mongoose": "^4.8.6",
+    "body-parser": "*"
+  }
+}
