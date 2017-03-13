@@ -13,7 +13,8 @@ Part of Nagarro CLP.
 * The solution should use NodeJS and MongoDB.
 * The server application should expose following APIs
   * Add, Remove, and Edit for ‘Students’ in the college.
-  * Register and Unregister of ‘Company’ for the placement event in the college. o Register and Unregister a ‘Student’ for a ‘Company’ in the college.
+  * Register and Unregister of ‘Company’ for the placement event in the college. 
+  * Register and Unregister a ‘Student’ for a ‘Company’ in the college.
 * Above APIs should be completed in all respect including database.
 * Additionally –
   * Implementing API Data validation,
