@@ -20,3 +20,10 @@ Saves Company in companys collection
 module.exports.registerCompany = function(student, callback){
 	Companys.create(student, callback);
 }
+
+/*
+Returns all the companys
+*/
+module.exports.getCompanies = function(query, callback, limit){
+	Companys.find(query, callback).limit(limit);
+}

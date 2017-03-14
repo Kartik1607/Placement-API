@@ -22,3 +22,10 @@ Saves Student in students collection
 module.exports.addStudent = function(student, callback){
 	Students.create(student, callback);
 }
+
+/*
+Returns all the students
+*/
+module.exports.getStudents = function(query, callback, limit){
+	Students.find(query, callback).limit(limit);
+}
