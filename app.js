@@ -109,7 +109,7 @@ Returns JSON string of created object.
 	cgpa : Number, //CGPA of Student
 	applied_For : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for companies
 */
-app.post('/api/students', function(req, res){
+app.post('/api/students/add', function(req, res){
 	var student = req.body;
 	Students.addStudent(student, function(err, student){
 		if(err){
@@ -117,6 +117,34 @@ app.post('/api/students', function(req, res){
 		}
 		res.json(student);
 	});
+});
+
+
+app.post('/api/students/update', function(req, res){
+	var student = req.body;
+	id = req.query.id;
+	name = req.query.name;
+	department = req.query.department;
+	mincgpa = req.query.mincgpa;
+	var query = {};
+	if(id !== undefined) 
+		query._id= id;
+	if(name !== undefined)
+		query.name = name;
+	if(department !== undefined)
+		query.department = department;
+	if(mincgpa !== undefined)
+		query.cgpa = { $gte: mincgpa };
+	Students.updateStudents(query, student, function(err, student){
+		if(err){
+			throw err;
+		}
+		res.json(student);
+	});
+});
+
+app.post('api/students/register', function(req,res){
+	//Register student for company
 });
 
 
@@ -132,7 +160,7 @@ Returns JSON string of created object.
 	student_Ids : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for Students who have applied to this company
 
 */
-app.post('/api/companies', function(req, res){
+app.post('/api/companies/register', function(req, res){
 	var company = req.body;
 	Companies.registerCompany(company, function(err, company){
 		if(err){
@@ -141,3 +169,4 @@ app.post('/api/companies', function(req, res){
 		res.json(company);
 	});
 });
+

@@ -23,6 +23,12 @@ module.exports.addStudent = function(student, callback){
 	Students.create(student, callback);
 }
 
+
+/*Updates Single or multiple Students based on query */
+module.exports.updateStudents = function(query, student, callback){
+	Students.update(query, student, { multi: true }, callback);
+}
+
 /*
 Returns all the students
 */
