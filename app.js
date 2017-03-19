@@ -84,34 +84,22 @@ app.get('/api/students', function(req,res){
 
 
 
-/* db.test.aggregate(
-  // Start with a $match pipeline which can take advantage of an index and limit documents processed
-  { $match : {
-     "shapes.color": "red"
-  }},
-  { $unwind : "$shapes" },
-  { $match : {
-     "shapes.color": "red"
-  }}
-) */
+/* 
+Gets registration list based on query parameters. 
+
+		__SCHEMA__
+student_Id : _id for student,
+company_Id : _id for company,
+ */
 app.get('/api/students/register', function(req,res){
 	sid = req.query.sid;
 	cid = req.query.cid;
 	var query = {};
-	var matchQuery = {};
 	if(sid !== undefined){
-		matchQuery.student_Id = sid;
+		query.student_Id = sid;
 	}
 	if(cid !== undefined){
-		matchQuery.company_Id = cid;
-	}
-	if(sid !== undefined || cid !== undefined ){
-		query = {
-			data : {
-				$elemMatch : matchQuery
-			}
-		}
-
+		query.company_Id = cid;
 	}
 	Registrations.getRegistrations(query,function(err,registration){
 		if(err){
@@ -152,6 +140,16 @@ app.post('/api/students/add', function(req, res){
 });
 
 
+
+/*
+Updates student/s based on query.
+Usage : POST JSON object for updates needed.
+	Optional Query Search Parameters
+id : _id for student
+name : Name of student (Full name) (Case Sensitive)
+department : All students of given department
+mincgpa : All students with CPGA >= provided.
+*/
 app.post('/api/students/update', function(req, res){
 	var student = req.body;
 	id = req.query.id;
@@ -175,12 +173,24 @@ app.post('/api/students/update', function(req, res){
 	});
 });
 
+
+/*
+Regiters a student for a company
+Usage : Send query parameters.
+Returns JSON string of created object if not exists. 
+	Required Query Search Parameters
+sid : _id for student
+cid : _id for company
+*/
 app.post('/api/students/register', function(req,res){
 	var data = req.body;
 	sid = req.query.sid;
 	cid = req.query.cid;
+	var register = {};
 	if(cid !== undefined && sid !== undefined){
-		Registrations.addRegistration(sid,cid,function(err, register){
+		register.student_Id = sid;
+		register.company_Id = cid;
+		Registrations.addRegistration(register,function(err, register){
 			if(err){
 				throw err;
 			}
