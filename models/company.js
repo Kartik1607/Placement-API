@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 var companySchema = mongoose.Schema({
 	name : String, //Name of Company
 	placement_date : String, //Date when company is coming for placemnt
-	student_Ids : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for Students who have applied to this company
 	updated : { type: Date, default: Date.now },
 }); 
 

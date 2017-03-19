@@ -5,7 +5,6 @@ var studentSchema = mongoose.Schema({
 	department : String, //Departemnt of Student. eg CSE, IT etc
 	rollno : Number, //Rollnumber of Student
 	cgpa : Number, //CGPA of Student
-	applied_For : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for companies
 	updated : { type: Date, default: Date.now },
 }); 
 

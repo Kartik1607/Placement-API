@@ -4,6 +4,7 @@ var bodyParser =  require('body-parser');
 var mongoose = require('mongoose');
 Students = require('./models/student');
 Companies = require('./models/company');
+Registrations = require('./models/registration');
 
 app.use(bodyParser.json())
 
@@ -47,6 +48,7 @@ app.get('/api/companies', function(req,res){
 	});
 });
 
+
 /*
 Gets list of all the students currently saved.
 Usage : GET at /api/students
@@ -82,11 +84,42 @@ app.get('/api/students', function(req,res){
 
 
 
+/* db.test.aggregate(
+  // Start with a $match pipeline which can take advantage of an index and limit documents processed
+  { $match : {
+     "shapes.color": "red"
+  }},
+  { $unwind : "$shapes" },
+  { $match : {
+     "shapes.color": "red"
+  }}
+) */
+app.get('/api/students/register', function(req,res){
+	sid = req.query.sid;
+	cid = req.query.cid;
+	var query = {};
+	var matchQuery = {};
+	if(sid !== undefined){
+		matchQuery.student_Id = sid;
+	}
+	if(cid !== undefined){
+		matchQuery.company_Id = cid;
+	}
+	if(sid !== undefined || cid !== undefined ){
+		query = {
+			data : {
+				$elemMatch : matchQuery
+			}
+		}
 
-
-
-
-
+	}
+	Registrations.getRegistrations(query,function(err,registration){
+		if(err){
+			throw err;
+		}
+		res.json(registration);
+	});
+});
 
 
 
@@ -107,7 +140,6 @@ Returns JSON string of created object.
 	department : String, //Departemnt of Student. eg CSE, IT etc
 	rollno : Number, //Rollnumber of Student
 	cgpa : Number, //CGPA of Student
-	applied_For : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for companies
 */
 app.post('/api/students/add', function(req, res){
 	var student = req.body;
@@ -143,8 +175,20 @@ app.post('/api/students/update', function(req, res){
 	});
 });
 
-app.post('api/students/register', function(req,res){
-	//Register student for company
+app.post('/api/students/register', function(req,res){
+	var data = req.body;
+	sid = req.query.sid;
+	cid = req.query.cid;
+	if(cid !== undefined && sid !== undefined){
+		Registrations.addRegistration(sid,cid,function(err, register){
+			if(err){
+				throw err;
+			}
+			res.json(register);
+		})
+	}else{
+		res.send("Invalid Query Parameters");
+	}
 });
 
 
@@ -157,8 +201,6 @@ Returns JSON string of created object.
 			__SCHEMA__
 	name : String, //Name of Company
 	placement_date : String, //Date when company is coming for placemnt
-	student_Ids : [mongoose.Schema.Types.ObjectId], // Array of ObjectId for Students who have applied to this company
-
 */
 app.post('/api/companies/register', function(req, res){
 	var company = req.body;
@@ -169,4 +211,3 @@ app.post('/api/companies/register', function(req, res){
 		res.json(company);
 	});
 });
-
