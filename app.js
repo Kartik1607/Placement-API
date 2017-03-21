@@ -221,3 +221,77 @@ app.post('/api/companies/register', function(req, res){
 		res.json(company);
 	});
 });
+
+
+
+/* Delete Methods Below */
+
+
+
+
+/*
+Unregisters a student from placement base on query
+
+Required query paramter : sid (Student Id)
+Optional query paramert : cid (Compant Id)
+
+*/
+app.delete('/api/students/register', function(req, res){
+	sid = req.query.sid;
+	cid = req.query.cid;
+	var query = {};
+	if(cid !== undefined){
+		query.company_Id = cid;
+	}
+	if(sid !== undefined){
+		query.student_Id = sid;
+	}
+	if(sid === undefined){
+		res.send("Invalid Query Parameters");
+	}
+	else{
+		Registrations.removeRegistration(query,function(err, register){
+			if(err){
+				throw err;
+			}
+			res.json(register);
+		});
+	}
+});
+
+
+
+/*
+Unregisters a company from placement.
+
+Required query parameter : cid (Company Id)
+*/
+app.delete('/api/companies/register', function(req,res){
+	cid = req.query.cid;
+	var query = {};
+	
+	if(cid !== undefined){
+		query.company_Id = cid;
+	}
+
+	if(cid === undefined){
+		res.send("Invalid Query Parameters");
+	}
+	else{
+		queryC = {};
+		queryC._id = cid;
+		Companies.removeCompany(queryC,function(err, company){
+			if(err){
+				throw err;
+			}
+			Registrations.removeRegistration(query,function(err, register){
+				if(err){
+					throw err;
+				}
+				res.json(register + " " + company);
+			}); 
+		});
+		
+
+	}
+});

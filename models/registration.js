@@ -23,3 +23,7 @@ Returns the JSON of all registration based on query
 module.exports.getRegistrations = function(query, callback, limit){
 	Registrations.find(query,callback).limit(limit);
 }
+
+module.exports.removeRegistration = function(query, callback){
+	Registrations.remove(query,callback);
+}

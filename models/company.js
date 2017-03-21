@@ -26,3 +26,7 @@ Returns all the companys
 module.exports.getCompanies = function(query, callback, limit){
 	Companys.find(query, callback).limit(limit);
 }
+
+module.exports.removeCompany = function(query, callback) {
+	Companys.remove(query,callback);
+}
