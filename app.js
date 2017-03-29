@@ -2,6 +2,59 @@ var express = require('express');
 var app = express();
 var bodyParser =  require('body-parser');
 var mongoose = require('mongoose');
+var validator = require('validator');
+var errors = require('errors');
+
+errors.create({
+	name: 'JsonParseException',
+	defaultMessage: 'Invalid JSON String',
+	defaultExplanation: 'The String is not valid JSON String',
+	defaultResponse: 'Verify the String'
+});
+
+errors.create({
+	name: 'JsonDataException',
+	defaultMessage: 'JSON data does not meet minimum required conditions',
+	defaultExplanation: 'JSON is missing some required key fields',
+	defaultResponse: 'Verify that JSON contains all required keys'
+});
+
+errors.create({
+	name: 'InvalidRollnoException',
+	defaultMessage: 'RollNumber is not a positive integer',
+	defaultExplanation: 'RollNumber of student must be a positive integer',
+	defaultResponse: 'Verify that rollno is positive integer'
+});
+
+errors.create({
+	name: 'InvalidCGPAException',
+	defaultMessage: 'CGPA is not a positive float',
+	defaultExplanation: 'CGPA of student must be a positive float between 0 and 10',
+	defaultResponse: 'Verify that CGPA is positive float within boundry'
+});
+
+errors.create({
+	name: 'InvalidDepartmentException',
+	defaultMessage: 'Department is not valid',
+	defaultExplanation: 'Department entered does not match any possible departments',
+	defaultResponse: 'Allowed departments are ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"]'
+});
+
+errors.create({
+	name: 'InvalidIdException',
+	defaultMessage: 'Id is not valid mongoId',
+	defaultExplanation: 'Id is not correct mongoId',
+	defaultResponse: 'Check Id specified'
+});
+
+errors.create({
+	name: 'InvalidPlacementDateException',
+	defaultMessage: 'Date is either invalid or has passed',
+	defaultExplanation: 'Date format is wrong or is a past date',
+	defaultResponse: 'Check date. Correct Format : mm dd yyyy'
+});
+
+department_array = ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"];
 Students = require('./models/student');
 Companies = require('./models/company');
 Registrations = require('./models/registration');
@@ -90,7 +143,7 @@ Gets registration list based on query parameters.
 		__SCHEMA__
 student_Id : _id for student,
 company_Id : _id for company,
- */
+*/
 app.get('/api/students/register', function(req,res){
 	sid = req.query.sid;
 	cid = req.query.cid;
@@ -128,15 +181,39 @@ Returns JSON string of created object.
 	department : String, //Departemnt of Student. eg CSE, IT etc
 	rollno : Number, //Rollnumber of Student
 	cgpa : Number, //CGPA of Student
-*/
+	*/
 app.post('/api/students/add', function(req, res){
 	var student = req.body;
-	Students.addStudent(student, function(err, student){
-		if(err){
-			throw err;
+	
+	if(student.hasOwnProperty("name")  
+		&& student.hasOwnProperty("department")
+		&& student.hasOwnProperty("rollno")
+		&& student.hasOwnProperty("cgpa")){
+
+		if(!validator.isIn(student.department.toUpperCase(), department_array)){
+			res.send(new errors.InvalidDepartmentException().toString());
+			return;
 		}
-		res.json(student);
-	});
+
+		if(!validator.isInt(student.rollno, { gt : 0})){
+			res.send(new errors.InvalidRollnoException().toString());
+			return;
+		}	
+
+		if(!validator.isFloat(student.cgpa, {gte : 0.0 , lte : 10.0})){
+			res.send(new errors.InvalidCGPAException().toString());
+			return;
+		}
+
+		Students.addStudent(student, function(err, student){
+			if(err){
+				throw err;
+			}
+			res.json(student);
+		});
+	}else{
+		res.send(new errors.JsonDataException().toString());
+	}
 });
 
 
@@ -157,14 +234,49 @@ app.post('/api/students/update', function(req, res){
 	department = req.query.department;
 	mincgpa = req.query.mincgpa;
 	var query = {};
-	if(id !== undefined) 
-		query._id= id;
-	if(name !== undefined)
+	if(id !== undefined){
+		if(validator.isMongoId(id))
+			query._id= id;
+		else{
+			res.send(new errors.InvalidIdException().toString());
+			return;
+		}
+	} 
+	if(name !== undefined){
 		query.name = name;
-	if(department !== undefined)
-		query.department = department;
-	if(mincgpa !== undefined)
-		query.cgpa = { $gte: mincgpa };
+	}
+	if(department !== undefined){
+		if(validator.isIn(department.toUpperCase(), department_array))
+			query.department = department;
+		else{
+			res.send(new errors.InvalidDepartmentException().toString());
+			return;
+		}
+	}
+	if(mincgpa !== undefined){
+		if(validator.isFloat(mincgpa, {gte : 0.0 , lte : 10.0}))
+			query.cgpa = { $gte: mincgpa };
+		else{
+			res.send(new errors.InvalidCGPAException().toString());
+			return;
+		}
+	}
+
+	if( stundent.hasOwnProperty("rollno") && !validator.isInt(student.rollno, { gt : 0})){
+		res.send(new errors.InvalidRollnoException().toString());
+		return;
+	}
+
+	if( student.hasOwnProperty("department") && !validator.isIn(department.toUpperCase(), department_array)){
+		res.send( new errors.InvalidDepartmentException().toString());
+		return;
+	}
+
+	if( student.hasOwnProperty("cgpa") && !validator.isFloat(mincgpa, {gte : 0.0 , lte : 10.0})){
+		res.send( new errors.InvalidCGPAException().toString());
+		return;
+	}
+
 	Students.updateStudents(query, student, function(err, student){
 		if(err){
 			throw err;
@@ -183,9 +295,12 @@ sid : _id for student
 cid : _id for company
 */
 app.post('/api/students/register', function(req,res){
-	var data = req.body;
 	sid = req.query.sid;
 	cid = req.query.cid;
+	if(!(validator.isMongoId(cid) && validator.isMongoId(sid))){
+		res.send( new errors.InvalidIdException().toString());
+		return;
+	}
 	var register = {};
 	if(cid !== undefined && sid !== undefined){
 		register.student_Id = sid;
@@ -211,20 +326,42 @@ Returns JSON string of created object.
 			__SCHEMA__
 	name : String, //Name of Company
 	placement_date : String, //Date when company is coming for placemnt
-*/
+	*/
 app.post('/api/companies/register', function(req, res){
 	var company = req.body;
-	Companies.registerCompany(company, function(err, company){
-		if(err){
-			throw err;
+	console.log(company);
+	if(company.hasOwnProperty("name") && company.hasOwnProperty("placement_date")){
+		if(!validator.isAfter(company.placement_date)){
+			res.send(new errors.InvalidPlacementDateException().toString());
+			return;
 		}
-		res.json(company);
-	});
+		Companies.registerCompany(company, function(err, company){
+			if(err){
+				throw err;
+			}
+			res.json(company);
+		});
+	}else{
+		res.send(new errors.JsonDataException().toString());
+	}
 });
 
 
 
-/* Delete Methods Below */
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/* Delete Methods Below */
 
 
 
@@ -294,4 +431,28 @@ app.delete('/api/companies/register', function(req,res){
 		
 
 	}
+});
+
+
+app.delete('/api/students/remove', function(req,res){
+	id = req.query.id;
+	name = req.query.name;
+	department = req.query.department;
+	mincgpa = req.query.mincgpa;
+	var query = {};
+	if(id !== undefined) 
+		query._id= id;
+	if(name !== undefined)
+		query.name = name;
+	if(department !== undefined)
+		query.department = department;
+	if(mincgpa !== undefined)
+		query.cgpa = { $gte: mincgpa };
+
+	Students.removeStudents(query,function(err, student){
+		if(err){
+			throw err;
+		}
+		res.json(student);
+	});
 });

@@ -34,3 +34,9 @@ Returns all the students
 module.exports.getStudents = function(query, callback, limit){
 	Students.find(query, callback).limit(limit);
 }
+
+
+
+module.exports.removeStudents = function(query, callback){
+	Students.remove(query, callback);
+}

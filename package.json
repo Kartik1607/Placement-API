@@ -9,8 +9,10 @@
   "author": "Kartik",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "*",
+    "errors": "^0.3.0",
     "express": "^4.15.2",
     "mongoose": "^4.8.6",
-    "body-parser": "*"
+    "validator": "^7.0.0"
   }
 }
