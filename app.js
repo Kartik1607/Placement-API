@@ -51,7 +51,7 @@ errors.create({
 	name: 'InvalidPlacementDateException',
 	defaultMessage: 'Date is either invalid or has passed',
 	defaultExplanation: 'Date format is wrong or is a past date',
-	defaultResponse: 'Check date. Correct Format : mm dd yyyy'
+	defaultResponse: 'Check date. Correct Format : mm-dd-yyyy'
 });
 
 department_array = ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"];
@@ -87,12 +87,18 @@ app.get('/api/companies', function(req,res){
 	name = req.query.name;
 	date = req.query.date;
 	var query = {};
-	if(id !== undefined) 
+	if(id !== undefined){
+		if(!validator.isMongoId(id)){
+			res.send(new errors.InvalidIdException().toString());
+			return;
+		}
 		query._id= id;
+	}
 	if(name !== undefined)
 		query.name = name;
-	if(date !== undefined)
+	if(date !== undefined){
 		query.placement_date = date;
+	}
 	Companies.getCompanies(query, function(err,companies){
 		if(err){
 			throw err;
@@ -119,14 +125,30 @@ app.get('/api/students', function(req,res){
 	department = req.query.department;
 	mincgpa = req.query.mincgpa;
 	var query = {};
-	if(id !== undefined) 
+	if(id !== undefined){
+		if(!validator.isMongoId(id)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		} 
 		query._id= id;
-	if(name !== undefined)
+	}
+	if(name !== undefined){
 		query.name = name;
-	if(department !== undefined)
+	}
+	if(department !== undefined){
+		if(!validator.isIn(department,department_array)){
+			res.send( new errors.InvalidDepartmentException().toString());
+			return;
+		}
 		query.department = department;
-	if(mincgpa !== undefined)
+	}
+	if(mincgpa !== undefined){
+		if(!validator.isFloat(cgpa,{gte : 0.0 , lte : 10.0})){
+			res.send( new errors.InvalidCGPAException().toString());
+			return;
+		}
 		query.cgpa = { $gte: mincgpa };
+	}
 	Students.getStudents(query, function(err,students){
 		if(err){
 			throw err;
@@ -149,9 +171,17 @@ app.get('/api/students/register', function(req,res){
 	cid = req.query.cid;
 	var query = {};
 	if(sid !== undefined){
+		if(!validator.isMongoId(sid)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		}
 		query.student_Id = sid;
 	}
 	if(cid !== undefined){
+		if(!validator.isMongoId(cid)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		}
 		query.company_Id = cid;
 	}
 	Registrations.getRegistrations(query,function(err,registration){
@@ -378,9 +408,17 @@ app.delete('/api/students/register', function(req, res){
 	cid = req.query.cid;
 	var query = {};
 	if(cid !== undefined){
+		if(!validator.isMongoId(cid)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		}
 		query.company_Id = cid;
 	}
 	if(sid !== undefined){
+		if(!validator.isMongoId(sid)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		}
 		query.student_Id = sid;
 	}
 	if(sid === undefined){
@@ -408,6 +446,10 @@ app.delete('/api/companies/register', function(req,res){
 	var query = {};
 	
 	if(cid !== undefined){
+		if(!validator.isMongoId(cid)){
+			res.send( new errors.InvalidIdException().toString());
+			return;
+		}
 		query.company_Id = cid;
 	}
 
