@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var companySchema = mongoose.Schema({
 	name : String, //Name of Company
 	placement_date : String, //Date when company is coming for placemnt
-	updated : { type: Date, default: Date.now },
+	updated : { type: Date, default: Date.now }
 }); 
 
 /*
