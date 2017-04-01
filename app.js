@@ -1,10 +1,15 @@
 var express = require('express');
-var app = express();
 var bodyParser =  require('body-parser');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var errors = require('errors');
+var winston = require('winston');
+var app = express();
 
+winston.add(winston.transports.File, { filename: 'LogFile.log' });
+
+
+/* ERRORS CREATED BELOW */
 errors.create({
 	name: 'JsonParseException',
 	defaultMessage: 'Invalid JSON String',
@@ -54,7 +59,7 @@ errors.create({
 	defaultResponse: 'Check date. Correct Format : mm-dd-yyyy'
 });
 
-department_array = ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"];
+department_array = ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"]; //List of possible departments
 Students = require('./models/student');
 Companies = require('./models/company');
 Registrations = require('./models/registration');
@@ -65,7 +70,7 @@ mongoose.connect('mongodb://localhost/placement');
 var db = mongoose.connection;
 
 app.get('/', function(req,res){
-	res.send('Hello World');
+	res.send('Placement API');
 }); 
 
 app.listen(3456);
@@ -101,8 +106,10 @@ app.get('/api/companies', function(req,res){
 	}
 	Companies.getCompanies(query, function(err,companies){
 		if(err){
+			winston.log('error',"Get (Companies) : " + err);
 			throw err;
 		}
+		winston.log('info',companies);
 		res.json(companies);
 	});
 });
@@ -151,8 +158,10 @@ app.get('/api/students', function(req,res){
 	}
 	Students.getStudents(query, function(err,students){
 		if(err){
+			winston.log('error',"Get (Students) : " + err);
 			throw err;
 		}
+		winston.log('info',students);
 		res.json(students);
 	});
 });
@@ -186,8 +195,10 @@ app.get('/api/students/register', function(req,res){
 	}
 	Registrations.getRegistrations(query,function(err,registration){
 		if(err){
+			winston.log('error',"Get (Students Register) : " + err);
 			throw err;
 		}
+		winston.log('info',registration);
 		res.json(registration);
 	});
 });
@@ -237,8 +248,10 @@ app.post('/api/students/add', function(req, res){
 
 		Students.addStudent(student, function(err, student){
 			if(err){
+				winston.log('error',"Post (Students Add) : " + err);
 				throw err;
 			}
+			winston.log('info',student);
 			res.json(student);
 		});
 	}else{
@@ -309,8 +322,10 @@ app.post('/api/students/update', function(req, res){
 
 	Students.updateStudents(query, student, function(err, student){
 		if(err){
+			winston.log('error',"Post (Students update) : " + err);
 			throw err;
 		}
+		winston.log('info',stundent);
 		res.json(student);
 	});
 });
@@ -337,8 +352,10 @@ app.post('/api/students/register', function(req,res){
 		register.company_Id = cid;
 		Registrations.addRegistration(register,function(err, register){
 			if(err){
+				winston.log('error',"Post (Students Register) : " + err);
 				throw err;
 			}
+			winston.log('info',register);
 			res.json(register);
 		})
 	}else{
@@ -367,8 +384,10 @@ app.post('/api/companies/register', function(req, res){
 		}
 		Companies.registerCompany(company, function(err, company){
 			if(err){
+				winston.log('error',"Post (Companies Register) : "+err);
 				throw err;
 			}
+			winston.log('info',company);
 			res.json(company);
 		});
 	}else{
@@ -427,8 +446,10 @@ app.delete('/api/students/register', function(req, res){
 	else{
 		Registrations.removeRegistration(query,function(err, register){
 			if(err){
+				winston.log('error',"Delete (Students Register) : " + err);
 				throw err;
 			}
+			winston.log('info',register);
 			res.json(register);
 		});
 	}
@@ -461,12 +482,16 @@ app.delete('/api/companies/register', function(req,res){
 		queryC._id = cid;
 		Companies.removeCompany(queryC,function(err, company){
 			if(err){
+				winston.log('error', "Delete (Companies Register) : " + err);
 				throw err;
 			}
 			Registrations.removeRegistration(query,function(err, register){
 				if(err){
+					winston.log('error', "Delete (Companies Register) : " + err);
 					throw err;
 				}
+				winston.log('info',register);
+				winston.log('info',company);
 				res.json(register + " " + company);
 			}); 
 		});
@@ -493,8 +518,10 @@ app.delete('/api/students/remove', function(req,res){
 
 	Students.removeStudents(query,function(err, student){
 		if(err){
+			winston.log('error', "Delete (Students Remove) : " + err);
 			throw err;
 		}
+		winston.log('info',stundent);
 		res.json(student);
 	});
 });
