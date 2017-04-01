@@ -33,4 +33,4 @@ Error messages.
 
 ## API Reference
 
-Coming Soon
+[Click Here](https://github.com/Kartik1607/Placement-API/blob/master/Documentation.pdf)
