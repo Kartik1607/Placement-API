@@ -10,7 +10,6 @@ winston.add(winston.transports.File, { filename: 'LogFile.log' });
 
 
 /* ERRORS CREATED BELOW */
-
 errors.create({
 	name: 'JsonParseException',
 	defaultMessage: 'Invalid JSON String',
@@ -94,7 +93,7 @@ app.get('/api/companies', function(req,res){
 	date = req.query.date;
 	var query = {};
 	if(id !== undefined){
-		if(!validator.isMongoId(id + '')){
+		if(!validator.isMongoId(id)){
 			res.send(new errors.InvalidIdException().toString());
 			return;
 		}
@@ -134,7 +133,7 @@ app.get('/api/students', function(req,res){
 	mincgpa = req.query.mincgpa;
 	var query = {};
 	if(id !== undefined){
-		if(!validator.isMongoId(id + '')){
+		if(!validator.isMongoId(id)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		} 
@@ -151,7 +150,7 @@ app.get('/api/students', function(req,res){
 		query.department = department;
 	}
 	if(mincgpa !== undefined){
-		if(!validator.isFloat(cgpa + '',{min : 0.0 , max : 10.0})){
+		if(!validator.isFloat(cgpa,{gte : 0.0 , lte : 10.0})){
 			res.send( new errors.InvalidCGPAException().toString());
 			return;
 		}
@@ -181,14 +180,14 @@ app.get('/api/students/register', function(req,res){
 	cid = req.query.cid;
 	var query = {};
 	if(sid !== undefined){
-		if(!validator.isMongoId(sid + '')){
+		if(!validator.isMongoId(sid)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		}
 		query.student_Id = sid;
 	}
 	if(cid !== undefined){
-		if(!validator.isMongoId(cid + '')){
+		if(!validator.isMongoId(cid)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		}
@@ -237,12 +236,12 @@ app.post('/api/students/add', function(req, res){
 			return;
 		}
 
-		if(!validator.isInt(student.rollno + '', { gt : 0})){
+		if(!validator.isInt(student.rollno, { gt : 0})){
 			res.send(new errors.InvalidRollnoException().toString());
 			return;
 		}	
 
-		if(!validator.isFloat(student.cgpa + '', {min : 0.0 , max : 10.0})){
+		if(!validator.isFloat(student.cgpa, {gte : 0.0 , lte : 10.0})){
 			res.send(new errors.InvalidCGPAException().toString());
 			return;
 		}
@@ -279,7 +278,7 @@ app.post('/api/students/update', function(req, res){
 	mincgpa = req.query.mincgpa;
 	var query = {};
 	if(id !== undefined){
-		if(validator.isMongoId(id + ''))
+		if(validator.isMongoId(id))
 			query._id= id;
 		else{
 			res.send(new errors.InvalidIdException().toString());
@@ -298,7 +297,7 @@ app.post('/api/students/update', function(req, res){
 		}
 	}
 	if(mincgpa !== undefined){
-		if(validator.isFloat(mincgpa + '', {min : 0.0 , max : 10.0}))
+		if(validator.isFloat(mincgpa, {gte : 0.0 , lte : 10.0}))
 			query.cgpa = { $gte: mincgpa };
 		else{
 			res.send(new errors.InvalidCGPAException().toString());
@@ -306,7 +305,7 @@ app.post('/api/students/update', function(req, res){
 		}
 	}
 
-	if( stundent.hasOwnProperty("rollno") && !validator.isInt(student.rollno + '', { gt : 0})){
+	if( stundent.hasOwnProperty("rollno") && !validator.isInt(student.rollno, { gt : 0})){
 		res.send(new errors.InvalidRollnoException().toString());
 		return;
 	}
@@ -316,7 +315,7 @@ app.post('/api/students/update', function(req, res){
 		return;
 	}
 
-	if( student.hasOwnProperty("cgpa") && !validator.isFloat(mincgpa + '', {min : 0.0 , max : 10.0})){
+	if( student.hasOwnProperty("cgpa") && !validator.isFloat(mincgpa, {gte : 0.0 , lte : 10.0})){
 		res.send( new errors.InvalidCGPAException().toString());
 		return;
 	}
@@ -343,7 +342,7 @@ cid : _id for company
 app.post('/api/students/register', function(req,res){
 	sid = req.query.sid;
 	cid = req.query.cid;
-	if(!(validator.isMongoId(cid + '') && validator.isMongoId(sid + ''))){
+	if(!(validator.isMongoId(cid) && validator.isMongoId(sid))){
 		res.send( new errors.InvalidIdException().toString());
 		return;
 	}
@@ -428,14 +427,14 @@ app.delete('/api/students/register', function(req, res){
 	cid = req.query.cid;
 	var query = {};
 	if(cid !== undefined){
-		if(!validator.isMongoId(cid + '')){
+		if(!validator.isMongoId(cid)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		}
 		query.company_Id = cid;
 	}
 	if(sid !== undefined){
-		if(!validator.isMongoId(sid + '')){
+		if(!validator.isMongoId(sid)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		}
@@ -468,7 +467,7 @@ app.delete('/api/companies/register', function(req,res){
 	var query = {};
 	
 	if(cid !== undefined){
-		if(!validator.isMongoId(cid + '')){
+		if(!validator.isMongoId(cid)){
 			res.send( new errors.InvalidIdException().toString());
 			return;
 		}
@@ -522,7 +521,7 @@ app.delete('/api/students/remove', function(req,res){
 			winston.log('error', "Delete (Students Remove) : " + err);
 			throw err;
 		}
-		winston.log('info',student);
+		winston.log('info',stundent);
 		res.json(student);
 	});
 });
