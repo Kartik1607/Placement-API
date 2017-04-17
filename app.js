@@ -306,7 +306,7 @@ app.post('/api/students/update', function(req, res){
 		}
 	}
 
-	if( stundent.hasOwnProperty("rollno") && !validator.isInt(student.rollno + '', { gt : 0})){
+	if( student.hasOwnProperty("rollno") && !validator.isInt(student.rollno + '', { gt : 0})){
 		res.send(new errors.InvalidRollnoException().toString());
 		return;
 	}
