@@ -311,12 +311,12 @@ app.post('/api/students/update', function(req, res){
 		return;
 	}
 
-	if( student.hasOwnProperty("department") && !validator.isIn(department.toUpperCase(), department_array)){
+	if( student.hasOwnProperty("department") && !validator.isIn(student.department.toUpperCase(), department_array)){
 		res.send( new errors.InvalidDepartmentException().toString());
 		return;
 	}
 
-	if( student.hasOwnProperty("cgpa") && !validator.isFloat(mincgpa + '', {min : 0.0 , max : 10.0})){
+	if( student.hasOwnProperty("cgpa") && !validator.isFloat(student.cgpa + '', {min : 0.0 , max : 10.0})){
 		res.send( new errors.InvalidCGPAException().toString());
 		return;
 	}
@@ -326,7 +326,7 @@ app.post('/api/students/update', function(req, res){
 			winston.log('error',"Post (Students update) : " + err);
 			throw err;
 		}
-		winston.log('info',stundent);
+		winston.log('info',student);
 		res.json(student);
 	});
 });
