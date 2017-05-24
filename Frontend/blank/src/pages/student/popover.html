@@ -1,0 +1,47 @@
+<ion-content>
+    <ion-list>
+        <ion-list-header>
+            Departments
+        </ion-list-header>
+        <ion-item>
+            <ion-label>CSE</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedCSE"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>IT</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedIT"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>ME</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedME"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>CV</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedCV"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>BBA</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedBBA"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>BCOM</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedBCOM"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>EEE</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedEEE"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+            <ion-label>ECE</ion-label>
+            <ion-checkbox checked="true" [(ngModel)]="data.checkedECE"></ion-checkbox>
+        </ion-item>
+
+        <ion-row>
+            <ion-col><button ion-button clear (click)="onApply()">Apply</button></ion-col>
+            <ion-col><button ion-button color="dark" clear (click)="onCancel()">Cancel</button></ion-col>
+        </ion-row>
+
+
+    </ion-list>
+    
+</ion-content>

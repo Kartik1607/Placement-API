@@ -5,7 +5,10 @@ var validator = require('validator');
 var errors = require('errors');
 var winston = require('winston');
 var app = express();
+var cors = require('cors');
 
+
+var HttpStatus = require('http-status-codes');
 winston.add(winston.transports.File, { filename: 'LogFile.log' });
 
 
@@ -74,6 +77,7 @@ app.get('/', function(req,res){
 	res.send('Placement API');
 }); 
 
+app.use(cors())
 app.listen(3456);
 
 /* GET METHODS BELOW */
@@ -95,7 +99,7 @@ app.get('/api/companies', function(req,res){
 	var query = {};
 	if(id !== undefined){
 		if(!validator.isMongoId(id + '')){
-			res.send(new errors.InvalidIdException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 			return;
 		}
 		query._id= id;
@@ -135,7 +139,7 @@ app.get('/api/students', function(req,res){
 	var query = {};
 	if(id !== undefined){
 		if(!validator.isMongoId(id + '')){
-			res.send( new errors.InvalidIdException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 			return;
 		} 
 		query._id= id;
@@ -145,14 +149,14 @@ app.get('/api/students', function(req,res){
 	}
 	if(department !== undefined){
 		if(!validator.isIn(department,department_array)){
-			res.send( new errors.InvalidDepartmentException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidDepartmentException().toString());
 			return;
 		}
 		query.department = department;
 	}
 	if(mincgpa !== undefined){
 		if(!validator.isFloat(cgpa + '',{min : 0.0 , max : 10.0})){
-			res.send( new errors.InvalidCGPAException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidCGPAException().toString());
 			return;
 		}
 		query.cgpa = { $gte: mincgpa };
@@ -182,14 +186,14 @@ app.get('/api/students/register', function(req,res){
 	var query = {};
 	if(sid !== undefined){
 		if(!validator.isMongoId(sid + '')){
-			res.send( new errors.InvalidIdException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 			return;
 		}
 		query.student_Id = sid;
 	}
 	if(cid !== undefined){
 		if(!validator.isMongoId(cid + '')){
-			res.send( new errors.InvalidIdException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 			return;
 		}
 		query.company_Id = cid;
@@ -233,17 +237,17 @@ app.post('/api/students/add', function(req, res){
 		&& student.hasOwnProperty("cgpa")){
 
 		if(!validator.isIn(student.department.toUpperCase(), department_array)){
-			res.send(new errors.InvalidDepartmentException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidDepartmentException().toString());
 			return;
 		}
 
 		if(!validator.isInt(student.rollno + '', { gt : 0})){
-			res.send(new errors.InvalidRollnoException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidRollnoException().toString());
 			return;
 		}	
 
 		if(!validator.isFloat(student.cgpa + '', {min : 0.0 , max : 10.0})){
-			res.send(new errors.InvalidCGPAException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidCGPAException().toString());
 			return;
 		}
 
@@ -256,7 +260,7 @@ app.post('/api/students/add', function(req, res){
 			res.json(student);
 		});
 	}else{
-		res.send(new errors.JsonDataException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.JsonDataException().toString());
 	}
 });
 
@@ -282,7 +286,7 @@ app.post('/api/students/update', function(req, res){
 		if(validator.isMongoId(id + ''))
 			query._id= id;
 		else{
-			res.send(new errors.InvalidIdException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 			return;
 		}
 	} 
@@ -293,7 +297,7 @@ app.post('/api/students/update', function(req, res){
 		if(validator.isIn(department.toUpperCase(), department_array))
 			query.department = department;
 		else{
-			res.send(new errors.InvalidDepartmentException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidDepartmentException().toString());
 			return;
 		}
 	}
@@ -301,23 +305,23 @@ app.post('/api/students/update', function(req, res){
 		if(validator.isFloat(mincgpa + '', {min : 0.0 , max : 10.0}))
 			query.cgpa = { $gte: mincgpa };
 		else{
-			res.send(new errors.InvalidCGPAException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidCGPAException().toString());
 			return;
 		}
 	}
 
 	if( student.hasOwnProperty("rollno") && !validator.isInt(student.rollno + '', { gt : 0})){
-		res.send(new errors.InvalidRollnoException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidRollnoException().toString());
 		return;
 	}
 
 	if( student.hasOwnProperty("department") && !validator.isIn(student.department.toUpperCase(), department_array)){
-		res.send( new errors.InvalidDepartmentException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidDepartmentException().toString());
 		return;
 	}
 
 	if( student.hasOwnProperty("cgpa") && !validator.isFloat(student.cgpa + '', {min : 0.0 , max : 10.0})){
-		res.send( new errors.InvalidCGPAException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidCGPAException().toString());
 		return;
 	}
 
@@ -344,7 +348,7 @@ app.post('/api/students/register', function(req,res){
 	sid = req.query.sid;
 	cid = req.query.cid;
 	if(!(validator.isMongoId(cid + '') && validator.isMongoId(sid + ''))){
-		res.send( new errors.InvalidIdException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidIdException().toString());
 		return;
 	}
 	var register = {};
@@ -380,7 +384,7 @@ app.post('/api/companies/register', function(req, res){
 	console.log(company);
 	if(company.hasOwnProperty("name") && company.hasOwnProperty("placement_date")){
 		if(!validator.isAfter(company.placement_date)){
-			res.send(new errors.InvalidPlacementDateException().toString());
+			res.status(HttpStatus.BAD_REQUEST).send( new errors.InvalidPlacementDateException().toString());
 			return;
 		}
 		Companies.registerCompany(company, function(err, company){
@@ -392,7 +396,7 @@ app.post('/api/companies/register', function(req, res){
 			res.json(company);
 		});
 	}else{
-		res.send(new errors.JsonDataException().toString());
+		res.status(HttpStatus.BAD_REQUEST).send( new errors.JsonDataException().toString());
 	}
 });
 

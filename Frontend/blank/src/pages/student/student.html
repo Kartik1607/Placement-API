@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onBackPressed()" *ngIf="!searchBarVisibility">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button icon-only *ngIf="!searchBarVisibility" (click)="onAddPressed()">
+        <ion-icon name="add" ></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button icon-only *ngIf="!searchBarVisibility" (click)="onMenuPressed($event)">
+        <ion-icon name="more" ></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title *ngIf="!searchBarVisibility">Student</ion-title>
+
+    <ion-buttons start>
+      <button ion-button icon-only (click)="onSearchPressed()" *ngIf="!searchBarVisibility">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-searchbar *ngIf="searchBarVisibility" animated="true" showCancelButton="true" (ionCancel)="onSearchCancel($event)" (ionInput)="onSearchInput($event)"></ion-searchbar>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+
+<ion-alpha-scroll *ngIf="students.length > 0"
+  [listData]="students"
+  key="name"
+  [itemTemplate]="alphaScrollItemTemplate"
+  [currentPageClass]="currentPageClass"
+  [triggerChange]="triggerAlphaScrollChange">
+</ion-alpha-scroll>
+
+</ion-content>

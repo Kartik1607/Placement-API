@@ -1,0 +1,20 @@
+page-home {
+
+    .imglogo{
+        position: absolute;
+        left: 50%;
+        top: 20%;
+        transform: translate(-50% , 0%);
+        width: 50%;
+    }
+
+    .home {
+        background: linear-gradient(to bottom, #8B558E 0%, #FFF 100%);
+    }
+
+    .button{
+        width: 100%;
+        margin: auto;
+    }
+
+}
