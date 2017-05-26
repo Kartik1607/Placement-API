@@ -1,0 +1,23 @@
+page-student_info {
+    .toolbar {
+        .toolbar-background {
+            background: transparent;
+        }
+    }
+
+    .img_avatar{
+        width: 50%;
+        transform: translate(50%,0%);
+    }
+
+    .content_detail{
+        position: absolute;
+        top: 0%;
+    }
+
+    .card{
+        border-radius : 10px;
+    }
+
+
+}

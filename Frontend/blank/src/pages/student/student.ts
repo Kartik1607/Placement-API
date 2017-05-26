@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, PopoverController } from 'ionic-angular';
 import { PopOverPage } from '../student/popover'
 import { StudentAddPage } from '../student/student_add'
+import { StudentInfoPage } from '../student/info/student_info'
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
@@ -136,19 +137,19 @@ export class StudentPage {
             roll_number: res[i].rollno,
             cgpa: res[i].cgpa
           });
-          this.dataOriginal.sort((a, b) => {
-            if (a.name < b.name) return -1;
-            else if (a.name > b.name) return 1;
-            else return 0;
-          })
-          this.students = this.getCurrentFilteredStudents()
-          this.triggerAlphaScrollChange++;
         }
+        this.dataOriginal.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          else if (a.name > b.name) return 1;
+          else return 0;
+        })
+        this.students = this.getCurrentFilteredStudents()
+        this.triggerAlphaScrollChange++;
       });
   }
 
   onItemClick(item) {
-    this.triggerAlphaScrollChange++;
+    this.navCtrl.push(StudentInfoPage, { data: item });
   }
 
   getRandomInt(min, max) {

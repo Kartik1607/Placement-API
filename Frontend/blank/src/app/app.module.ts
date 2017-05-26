@@ -9,6 +9,9 @@ import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { PopOverPage } from '../pages/student/popover'
 import { StudentAddPage } from '../pages/student/student_add'
+import { StudentInfoEditPage } from '../pages/student/info/student_edit'
+import { StudentInfoPage } from '../pages/student/info/student_info'
+import { CompanyPage} from '../pages/company/company'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -22,6 +25,9 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
     ContactPage,
     PopOverPage,
     StudentAddPage,
+    StudentInfoPage,
+    StudentInfoEditPage,
+    CompanyPage,
     HomePage
   ],
   imports: [
@@ -37,6 +43,9 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
     ContactPage,
     PopOverPage,
     StudentAddPage,
+    StudentInfoPage,
+    StudentInfoEditPage,
+    CompanyPage,
     HomePage
   ],
   providers: [

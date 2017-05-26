@@ -1,0 +1,81 @@
+<ion-header no-border>
+    <ion-toolbar>
+
+        <ion-buttons left>
+            <button ion-button icon-only (click)="onBackPressed()">
+            <ion-icon name="arrow-back"></ion-icon>
+            </button>
+        </ion-buttons>
+
+        <ion-title>Details</ion-title>
+
+        <ion-buttons right>
+            <button ion-button icon-only (click)="onEditPressed()">
+              <ion-icon name="create"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content style="background: #FAF2A1">
+
+    <div class="content_detail">
+        <img src="assets/img/student.png" class="img_avatar" />
+
+        <ion-card>
+            <ion-card-header>
+                <ion-item>
+                    <ion-icon name="ionitron" item-left></ion-icon>
+                    <h1><b>{{student_data.name}}</b></h1>
+                    <p>{{department_string}}</p>
+                </ion-item>
+            </ion-card-header>
+            <hr>
+            <ion-grid>
+
+                <ion-row>
+                    <ion-col>
+                        <h2><b>CGPA</b></h2>
+                        <p>{{student_data.cgpa}}</p>
+                    </ion-col>
+                    <ion-col>
+                        <h2><b>Roll Number</b></h2>
+                        <p>{{student_data.roll_number}}</p>
+                    </ion-col>
+
+                </ion-row>
+            </ion-grid>
+        </ion-card>
+
+        <ion-card>
+            <ion-card-header>
+                <ion-item>
+                    <ion-icon name="school" item-left></ion-icon>
+                    <h1><b>Placement Details</b></h1>
+                    <p>Put a sexy line here</p>
+                </ion-item>
+            </ion-card-header>
+            <hr>
+            <ion-list inset>
+                <ion-list-header>
+                    Upcoming
+                </ion-list-header>
+                <ion-item>Terminator II</ion-item>
+                <ion-item>The Empire Strikes Back</ion-item>
+                <ion-item>Blade Runner</ion-item>
+            </ion-list>
+            <ion-list inset>
+                <ion-list-header>
+                    Past
+                </ion-list-header>
+                <ion-item>Terminator II</ion-item>
+                <ion-item>The Empire Strikes Back</ion-item>
+                <ion-item>Blade Runner</ion-item>
+            </ion-list>
+        </ion-card>
+    </div>
+
+
+
+
+</ion-content>

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
-import { StudentPage } from '../student/student'
+import { StudentPage } from '../student/student';
+import { CompanyPage } from '../company/company';
 
 @Component({
   selector: 'page-home',
@@ -18,7 +19,7 @@ export class HomePage {
   }
 
   openCompany(){
-
+    this.navCtrl.push(CompanyPage)
   }
 
 }

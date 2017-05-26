@@ -1,0 +1,47 @@
+<ion-content>
+    <ion-list no-lines>
+        <ion-list-header>
+            Edit Student
+        </ion-list-header>
+        <ion-item>
+            <ion-label stacked>Full name</ion-label>
+            <ion-input type="text" maxlength="25" [(ngModel)] = "data.name"></ion-input>
+        </ion-item>
+
+
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked>CGPA</ion-label>
+                    <ion-input type="number" min="0" max="10" [(ngModel)] = "data.cgpa"></ion-input>
+                </ion-item>
+            </ion-col>
+            <ion-col>
+                <ion-item>
+                    <ion-label stacked>Roll number</ion-label>
+                    <ion-input type="number" [(ngModel)] = "data.roll_number"></ion-input>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+
+        <ion-item>
+            <ion-label stacked>Department</ion-label>
+            <ion-select [(ngModel)]="data.department" interface="popover">
+                <ion-option value="CSE">CSE</ion-option>
+                <ion-option value="IT">IT</ion-option>
+                <ion-option value="ME">ME</ion-option>
+                <ion-option value="CV">CV</ion-option>
+                <ion-option value="BBA">BBA</ion-option>
+                <ion-option value="BCOM">BCOM</ion-option>
+                <ion-option value="EEE">EEE</ion-option>
+                <ion-option value="ECE">ECE</ion-option>
+            </ion-select>
+        </ion-item>
+
+
+        <ion-row> <button ion-button  (click)="saveStudent()" style="width:70%; margin:auto">Save</button> </ion-row>
+    </ion-list>
+
+
+
+</ion-content>

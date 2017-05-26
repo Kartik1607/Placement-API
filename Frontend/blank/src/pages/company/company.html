@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons left>
+      <button ion-button icon-only (click)="onBackPressed()" *ngIf="!searchBarVisibility">
+        <ion-icon name="arrow-back"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button icon-only *ngIf="!searchBarVisibility" (click)="onAddPressed()">
+        <ion-icon name="add" ></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-title *ngIf="!searchBarVisibility">Company</ion-title>
+
+    <ion-buttons start>
+      <button ion-button icon-only (click)="onSearchPressed()" *ngIf="!searchBarVisibility">
+        <ion-icon name="search"></ion-icon>
+      </button>
+    </ion-buttons>
+
+    <ion-searchbar *ngIf="searchBarVisibility" animated="true" showCancelButton="true" (ionCancel)="onSearchCancel($event)" (ionInput)="onSearchInput($event)"></ion-searchbar>
+
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list >
+    <ion-list-header>
+      Upcoming Placements
+    </ion-list-header>
+    <button ion-item *ngFor="let item of upcoming_list" (click)="itemSelected(item)">
+      <h2>{{ item.name }}</h2>
+      <p>{{ getDateString(item.placement_date)}}</p>
+  </button>
+  </ion-list>
+  <ion-list >
+    <ion-list-header>
+      Past Placements
+    </ion-list-header>
+    <button ion-item *ngFor="let item of past_list" (click)="itemSelected(item)">
+      <h2>{{ item.name }}</h2>
+      <p>{{ getDateString(item.placement_date)}}</p>
+  </button>
+  </ion-list>
+</ion-content>
