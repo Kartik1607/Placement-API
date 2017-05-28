@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="dark">
     <ion-buttons left>
       <button ion-button icon-only (click)="onBackPressed()" *ngIf="!searchBarVisibility">
         <ion-icon name="arrow-back"></ion-icon>
@@ -7,16 +7,25 @@
     </ion-buttons>
 
     <ion-buttons end>
-      <button ion-button icon-only *ngIf="!searchBarVisibility" (click)="onAddPressed()">
+      <button ion-button icon-only *ngIf="!searchBarVisibility && !isForRegister" (click)="onAddPressed()">
         <ion-icon name="add" ></ion-icon>
       </button>
     </ion-buttons>
+
 
     <ion-buttons end>
       <button ion-button icon-only *ngIf="!searchBarVisibility" (click)="onMenuPressed($event)">
         <ion-icon name="more" ></ion-icon>
       </button>
     </ion-buttons>
+
+    <ion-buttons end>
+      <button ion-button icon-only *ngIf="!searchBarVisibility && isForRegister && totalSelected > 0" (click)="onRegister()">
+        <ion-icon name="jet" ></ion-icon>
+      </button>
+    </ion-buttons>
+
+    
 
     <ion-title *ngIf="!searchBarVisibility">Student</ion-title>
 

@@ -1,0 +1,19 @@
+<ion-content>
+    <ion-list no-lines>
+        <ion-list-header>
+            Add Company
+        </ion-list-header>
+        <ion-item>
+            <ion-label stacked>Company name</ion-label>
+            <ion-input type="text" maxlength="25" [(ngModel)]="name" autofocus></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label stacked>Placement Date</ion-label>
+            <ion-datetime displayFormat="DD MMM YYYY" [(ngModel)]="placement_date"></ion-datetime>
+        </ion-item>
+        <ion-row> <button ion-button (click)="saveStudent()" style="width:70%; margin:auto">Save</button> </ion-row>
+    </ion-list>
+
+
+
+</ion-content>

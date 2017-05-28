@@ -14,10 +14,16 @@
               <ion-icon name="create"></ion-icon>
             </button>
         </ion-buttons>
+
+        <ion-buttons right>
+            <button ion-button icon-only (click)="onDeletePressed()">
+                <ion-icon name="trash"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-toolbar>
 </ion-header>
 
-<ion-content style="background: #FAF2A1">
+<ion-content style="background: #E3DFD6">
 
     <div class="content_detail">
         <img src="assets/img/student.png" class="img_avatar" />
@@ -52,25 +58,31 @@
                 <ion-item>
                     <ion-icon name="school" item-left></ion-icon>
                     <h1><b>Placement Details</b></h1>
-                    <p>Put a sexy line here</p>
+                    <p>Companies applied for</p>
                 </ion-item>
             </ion-card-header>
-            <hr>
-            <ion-list inset>
-                <ion-list-header>
-                    Upcoming
-                </ion-list-header>
-                <ion-item>Terminator II</ion-item>
-                <ion-item>The Empire Strikes Back</ion-item>
-                <ion-item>Blade Runner</ion-item>
+        
+            <ion-list-header>
+                Upcoming
+            </ion-list-header>
+            <ion-label center *ngIf="upcomingCompanies.length==0" style="text-align:center"> No upcoming placements</ion-label>
+            <ion-list *ngFor="let item of upcomingCompanies" inset>
+                <ion-item>
+                    <ion-label>{{ item.name }}</ion-label>
+                    <ion-label item-right>{{ getDateString(item.placement_date)}}</ion-label>
+                </ion-item>
+
             </ion-list>
-            <ion-list inset>
-                <ion-list-header>
-                    Past
-                </ion-list-header>
-                <ion-item>Terminator II</ion-item>
-                <ion-item>The Empire Strikes Back</ion-item>
-                <ion-item>Blade Runner</ion-item>
+            <ion-list-header>
+                Past
+            </ion-list-header>
+            <ion-label center *ngIf="pastCompanies.length==0" style="text-align:center"> No past placements</ion-label>
+            <ion-list *ngFor="let item of pastCompanies" inset>
+
+                <ion-item>
+                    <ion-label>{{ item.name }}</ion-label>
+                    <ion-label item-right>{{ getDateString(item.placement_date)}}</ion-label>
+                </ion-item>
             </ion-list>
         </ion-card>
     </div>

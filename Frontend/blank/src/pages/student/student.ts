@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, PopoverController } from 'ionic-angular';
+import { NavController, PopoverController, ModalController, NavParams, ViewController, AlertController } from 'ionic-angular';
 import { PopOverPage } from '../student/popover'
 import { StudentAddPage } from '../student/student_add'
 import { StudentInfoPage } from '../student/info/student_info'
@@ -12,20 +12,19 @@ import 'rxjs/add/operator/map';
 })
 export class StudentPage {
 
+  isForRegister: boolean = false;
   currentPageClass = this;
-  alphaScrollItemTemplate: string = `
-    <ion-item (click)="currentPageClass.onItemClick(item)">
-      {{item.name}}
-    </ion-item>
-  `;
+  alphaScrollItemTemplate: string = ``;
   triggerAlphaScrollChange: number = 0;
+  totalSelected: number = 0;
 
   students: {
     student_id: string,
     name: string,
     department: string,
     roll_number: number,
-    cgpa: number
+    cgpa: number,
+    selected: boolean
   }[] = [];
 
   filterData: {
@@ -44,13 +43,23 @@ export class StudentPage {
 
   searchBarVisibility: boolean;
 
-  constructor(public navCtrl: NavController, public http: Http, public popoverCtrl: PopoverController) {
+  constructor(public navCtrl: NavController, public http: Http,
+    public popoverCtrl: PopoverController, public modCtrl: ModalController,
+    public navParms: NavParams, public viewCtrl: ViewController,
+    public alertCtrl: AlertController) {
     this.searchBarVisibility = false;
     this.getStudents();
+    this.isForRegister = navParms.get("isRegister");
+    this.alphaScrollItemTemplate = navParms.get("listTemplate");
+    this.triggerAlphaScrollChange++;
   }
 
   onBackPressed() {
-    this.navCtrl.pop();
+    if (this.isForRegister) {
+      this.viewCtrl.dismiss({});
+    } else {
+      this.navCtrl.pop();
+    }
   }
 
   onSearchPressed() {
@@ -107,7 +116,6 @@ export class StudentPage {
     let student_add = this.popoverCtrl.create(StudentAddPage);
     student_add.present();
     student_add.onDidDismiss(data => {
-      console.log(data);
       if (data === null) return;
       this.getStudents();
     });
@@ -119,7 +127,7 @@ export class StudentPage {
     if (val && val.trim() != '') {
       this.students = this.students.filter((item) => {
         return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      })
+      });
       this.triggerAlphaScrollChange++;
     }
   }
@@ -135,7 +143,8 @@ export class StudentPage {
             name: res[i].name,
             department: res[i].department,
             roll_number: res[i].rollno,
-            cgpa: res[i].cgpa
+            cgpa: res[i].cgpa,
+            selected: false
           });
         }
         this.dataOriginal.sort((a, b) => {
@@ -149,8 +158,45 @@ export class StudentPage {
   }
 
   onItemClick(item) {
-    this.navCtrl.push(StudentInfoPage, { data: item });
+    if (!this.isForRegister) {
+      let itemPage = this.modCtrl.create(StudentInfoPage, { data: item });
+      itemPage.present();
+      itemPage.onDidDismiss(data => {
+        if (data === undefined || data === null) return;
+        this.getStudents();
+      });
+    } else {
+      if(item.selected) ++this.totalSelected;
+      else --this.totalSelected;
+    }
   }
+
+  onRegister() {
+    let alert = this.alertCtrl.create({
+      title: 'Register Student',
+      message: "Register " + this.totalSelected + (this.totalSelected == 1 ? " student ? " : " students ?"),
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel Clicked');
+          }
+        },
+        {
+          text: 'Register',
+          handler: () => {
+            var result =  this.dataOriginal.filter((item) => {
+              return item.selected;
+            });
+            this.viewCtrl.dismiss(result);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;

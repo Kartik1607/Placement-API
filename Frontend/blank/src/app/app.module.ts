@@ -12,7 +12,8 @@ import { StudentAddPage } from '../pages/student/student_add'
 import { StudentInfoEditPage } from '../pages/student/info/student_edit'
 import { StudentInfoPage } from '../pages/student/info/student_info'
 import { CompanyPage} from '../pages/company/company'
-
+import { CompanyAddPage } from '../pages/company/company_add'
+import { CompanyInfoPage } from '../pages/company/info/company_info'
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
@@ -28,6 +29,8 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
     StudentInfoPage,
     StudentInfoEditPage,
     CompanyPage,
+    CompanyAddPage,
+    CompanyInfoPage,
     HomePage
   ],
   imports: [
@@ -46,6 +49,8 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
     StudentInfoPage,
     StudentInfoEditPage,
     CompanyPage,
+    CompanyAddPage,
+    CompanyInfoPage,
     HomePage
   ],
   providers: [

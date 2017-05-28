@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, PopoverController } from 'ionic-angular';
+import { NavController, PopoverController, ModalController } from 'ionic-angular';
 import { PopOverPage } from '../student/popover'
 import { StudentAddPage } from '../student/student_add'
 import { StudentInfoPage } from '../student/info/student_info'
+import { CompanyAddPage } from '../company/company_add'
+import { CompanyInfoPage } from '../company/info/company_info'
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
@@ -11,7 +13,6 @@ import 'rxjs/add/operator/map';
     templateUrl: 'company.html'
 })
 export class CompanyPage {
-    searchBarVisibility: boolean = false;
     monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
@@ -29,24 +30,11 @@ export class CompanyPage {
     upcoming_sorted: boolean = false;
     past_sorted: boolean = false;
 
-    constructor(public navCtrl: NavController, public http: Http) {
-        this.searchBarVisibility = false;
+    constructor(public navCtrl: NavController, public http: Http,  public popoverCtrl: PopoverController, public modCtrl : ModalController) {
         this.today = new Date();
         this.upcoming_list = [];
         this.past_list = [];
         this.getCompanies();
-    }
-
-    onSearchPressed() {
-        this.searchBarVisibility = !this.searchBarVisibility;
-    }
-
-    onSearchCancel(event) {
-        this.searchBarVisibility = false;
-    }
-
-    onSearchInput(input){
-        
     }
 
     onBackPressed() {
@@ -55,6 +43,8 @@ export class CompanyPage {
 
     getCompanies() {
         this.dataOriginal = [];
+        this.upcoming_list = [];
+        this.past_list = [];
         this.upcoming_sorted = this.past_sorted = false;
         this.http.get('http://127.0.0.1:3456/api/companies')
             .map(res => res.json())
@@ -93,12 +83,25 @@ export class CompanyPage {
     }
 
     itemSelected(item) {
-
+        let c_info = this.modCtrl.create(CompanyInfoPage, {data : item});
+        c_info.onDidDismiss(data=>{
+            if(data === undefined || data === null) return;
+            this.getCompanies();
+        });
+        c_info.present();
     }
 
     getDateString(date: Date): String {
         return date.getDate() + " " + this.monthNames[date.getMonth()] + " " + date.getFullYear();
     }
 
+    onAddPressed(){
+        let companyaddpage = this.popoverCtrl.create(CompanyAddPage);
+        companyaddpage.present();
+        companyaddpage.onDidDismiss(data => {
+            if(data === undefined || data === null) return;
+            this.getCompanies();
+        });
+    }
   
 }

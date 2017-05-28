@@ -15,7 +15,10 @@ export class HomePage {
   }
 
   openStudent() {
-    this.navCtrl.push(StudentPage);
+    this.navCtrl.push(StudentPage,{isRegister : false, listTemplate : `
+        <ion-item (click)="currentPageClass.onItemClick(item)">
+            <ion-label>{{item.name}}</ion-label>
+        </ion-item>`});
   }
 
   openCompany(){
