@@ -3,7 +3,7 @@ import { NavController, PopoverController, ModalController, NavParams, ViewContr
 import { PopOverPage } from '../student/popover'
 import { StudentAddPage } from '../student/student_add'
 import { StudentInfoPage } from '../student/info/student_info'
-import { Http } from '@angular/http';
+import { Http, Headers } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Component({
@@ -49,6 +49,7 @@ export class StudentPage {
     public alertCtrl: AlertController) {
     this.searchBarVisibility = false;
     this.getStudents();
+   // this.createFakeStudents();
     this.isForRegister = navParms.get("isRegister");
     this.alphaScrollItemTemplate = navParms.get("listTemplate");
     this.triggerAlphaScrollChange++;
@@ -201,4 +202,21 @@ export class StudentPage {
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  // createFakeStudents(){
+  //   let names = ["Aahna","Aarzoo","Akriti","Ananya","Anmol","Avani","Babita","Bhaagyasree","Bhanu","Bharati","Bhoomi","Chahat","Charu","Chetna","Chhavi","Chhaya","Damini","Darpana","Deepal","Dipti","Divya","Ekaja","Ekanshi","Ekta","Ena","Esha","Falguni","Gargi","Garima","Garvita","Gehna","Gunjan","Heena","Hema","Hetal","Himani","Indira","Ira","Isha","Ishika","Ishita","Jagriti","Janhavi","Jhalak","Jiya","Juhi","Kaajal","Kaavya","Kanak","Kanika","Karishma","Kashish","Khushi","Kinjal","Kirti","Komal","Koyal","Kshipra","Latika","Laveena","Lavleen","Lipi","Lipika","Madhuri","Mallika","Mansi","Mayuari","Mehar","Mridul","Naina","Nandini","Neeta","Neharika","Nidhi","Niyati","Nupur","Ojaswini","Palak","Pallavi","Pari","Prajakta","Pratibha","Praveen","Preeti","Prerena","Priya","Raakhi","Raashi","Radha","Ragini","Rajni","Riya","Ruhi","Sachi","Saloni","Sejal","Shagun","Shefali","Shilpa","Vasudha","Aaditya","Aarya","Abhay","Abhijeet","Abhinandan","Abhinay","Abhishek","Abimanyu","Aditya","Akhil","Akshat","Anil","Avi","Balaraam","Bharat","Bhaskar","Bhaumik","Bijay","Brijesh","Chandan","Chetan","Chirag","Chiranjeeve","Daksh","Daman","Depen","Dev","Dhruv","Divyanshu","Ekambar","Ekansh","Ekaraj","Eklavya","Elilarasan","Falak","Gagan","Gajendra","Garv","Gaurav","Gautam","Hardik","Harsh","Hemant","Hridaya","Indivar","Indra","Indraneel","Ishaan","Ishwar","Jai","Jaideep","Jatindra","Jayant","Kabir","Kamal","Kanha","Kartik","Kush","Lakhan","Lakshya","Lingam","Madhu","Manas","Manav","Mayank","Mihir","Milind","Nakul","Nikhil","Nischay","Nitish","Ojas","Om","Palash","Paras","Piyush","Pushkal","Rachit","Rahul","Rajan","Rajesh","Ranganathan","Ravi","Rohit","Sachin","Sahil","Sajan","Sameer","Satya","Saumil","Saurav","Tanish","Tanmay","Tejas","Tushar","Ujjwal","Vasu","Vidit","Vijay","Vishvas"];
+  //   let departments = ["CSE","IT","ME","CV","BBA","BCOM","EEE","ECE"];
+  //   var header = new Headers();
+  //   header.append("content-type", "application/json");
+  //   for(var i = 0; i < names.length; ++i){
+  //     let data = {
+  //       "name" : names[i],
+  //       "department" : departments[this.getRandomInt(0,7)],
+  //       "rollno" : this.getRandomInt(0,100) + '',
+  //       "cgpa" : this.getRandomInt(0,100)/10 + ''
+  //     };
+  //     this.http.post("http://localhost:3456/api/students/add", JSON.stringify(data) , {headers : header}).subscribe(res => {
+  //     });
+  //   }
+  // }
 }

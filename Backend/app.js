@@ -70,7 +70,7 @@ Registrations = require('./models/registration');
 
 app.use(bodyParser.json())
 
-mongoose.connect('mongodb://localhost/placement');
+mongoose.connect('mongodb://Kartik1607:Nagarro@ds157641.mlab.com:57641/placement');
 var db = mongoose.connection;
 
 app.get('/', function(req,res){
@@ -78,7 +78,7 @@ app.get('/', function(req,res){
 }); 
 
 app.use(cors())
-app.listen(3456);
+app.listen(process.env.PORT);
 
 /* GET METHODS BELOW */
 

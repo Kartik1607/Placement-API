@@ -43,7 +43,7 @@ export class StudentAddPage {
     }else{
       console.log("Time to push");
       var header = new Headers();
-      header.append("content-type", "application/json")
+      header.append("content-type", "application/json");
       let data = {
         "name" : this.name,
         "department" : this.department,
