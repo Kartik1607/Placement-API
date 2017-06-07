@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NavController, PopoverController, ModalController, NavParams, ViewController, AlertController } from 'ionic-angular';
+import { NavController, PopoverController, ModalController, NavParams, ViewController, AlertController, Platform } from 'ionic-angular';
+import { Network } from "@ionic-native/network";
 import { PopOverPage } from '../student/popover'
 import { StudentAddPage } from '../student/student_add'
 import { StudentInfoPage } from '../student/info/student_info'
@@ -12,12 +13,15 @@ import 'rxjs/add/operator/map';
 })
 export class StudentPage {
 
-  isForRegister: boolean = false;
+  apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/"; //URL of Backend server host
+  isForRegister: boolean = false; 
   currentPageClass = this;
   alphaScrollItemTemplate: string = ``;
   triggerAlphaScrollChange: number = 0;
   totalSelected: number = 0;
+  isLoading;
 
+  //Student data structure
   students: {
     student_id: string,
     name: string,
@@ -27,6 +31,7 @@ export class StudentPage {
     selected: boolean
   }[] = [];
 
+  //Current Filter(based on department) data set
   filterData: {
     checkedCSE: boolean,
     checkedIT: boolean,
@@ -46,54 +51,59 @@ export class StudentPage {
   constructor(public navCtrl: NavController, public http: Http,
     public popoverCtrl: PopoverController, public modCtrl: ModalController,
     public navParms: NavParams, public viewCtrl: ViewController,
-    public alertCtrl: AlertController) {
-    this.searchBarVisibility = false;
-    this.getStudents();
+    public alertCtrl: AlertController, public platform: Platform, public network: Network) {
+    this.searchBarVisibility = false; //By default searchbar is hidden
+    this.getStudents(); //Get list of students from server
    // this.createFakeStudents();
-    this.isForRegister = navParms.get("isRegister");
-    this.alphaScrollItemTemplate = navParms.get("listTemplate");
-    this.triggerAlphaScrollChange++;
+    this.isForRegister = navParms.get("isRegister"); //Is page opened by a company to register student?
+    this.alphaScrollItemTemplate = navParms.get("listTemplate"); //Update item template
+    this.triggerAlphaScrollChange++; 
+    this.connectionStatus = this.network.type;
+    this.checkNetwork(); //Check network conenction
   }
+ 
+  connectionStatus; 
+  checkNetwork() {
+        this.network.onConnect().subscribe(data=>{
+          this.connectionStatus = this.network.type;
+        });
+
+        this.network.onDisconnect().subscribe(data=>{
+          this.connectionStatus = this.network.type;
+        })
+    }
 
   onBackPressed() {
-    if (this.isForRegister) {
+    if (this.isForRegister) { //Register is opened as a modalcontroller
       this.viewCtrl.dismiss({});
-    } else {
+    } else { //Normal student list is opened as a push to NavigationContoller
       this.navCtrl.pop();
     }
   }
 
   onSearchPressed() {
-    this.searchBarVisibility = true;
+    this.searchBarVisibility = true; //Shows searchbar
   }
 
   onSearchCancel(event) {
-    this.students = this.getCurrentFilteredStudents();
-    this.searchBarVisibility = false;
+    this.students = this.getCurrentFilteredStudents(); //Reset filter 
+    this.searchBarVisibility = false; //Hide searchbar
   }
 
   onMenuPressed(event) {
-    let popover = this.popoverCtrl.create(PopOverPage, { filter: this.filterData });
+    let popover = this.popoverCtrl.create(PopOverPage, { filter: this.filterData }); //Show department filter menu
     popover.present({ ev: event });
 
     popover.onDidDismiss(data => {
-      if (data === null) return;
-      this.filterData = data;
+      if (data === null) return; //If popup canceled
+      this.filterData = data; //If popup Apply clicked
       this.onFilterChange();
-      // console.log("CSE : " + this.filterData.checkedCSE);
-      // console.log("IT : " + this.filterData.checkedIT);
-      // console.log("ME : " + this.filterData.checkedME);
-      // console.log("CV : " + this.filterData.checkedCV);
-      // console.log("BBA : " + this.filterData.checkedBBA);
-      // console.log("BCOM : " + this.filterData.checkedBCOM);
-      // console.log("EEE : " + this.filterData.checkedEEE);
-      // console.log("ECE : " + this.filterData.checkedECE);
     });
   }
 
   onFilterChange() {
     this.students = this.getCurrentFilteredStudents();
-    this.triggerAlphaScrollChange++;
+    this.triggerAlphaScrollChange++; //Update list
   }
 
   getCurrentFilteredStudents() {
@@ -114,32 +124,33 @@ export class StudentPage {
   }
 
   onAddPressed() {
-    let student_add = this.popoverCtrl.create(StudentAddPage);
+    let student_add = this.popoverCtrl.create(StudentAddPage); //Show popup to add new student
     student_add.present();
     student_add.onDidDismiss(data => {
-      if (data === null) return;
-      this.getStudents();
+      if (data === null) return; //If popup was cancelled
+      this.getStudents(); //Retreive new list otherwise
     });
   }
 
-  onSearchInput(event) {
-    let val = event.target.value;
+  onSearchInput(event) { 
+    let val = event.target.value; //Student name to search for
     this.students = this.getCurrentFilteredStudents();
     if (val && val.trim() != '') {
-      this.students = this.students.filter((item) => {
-        return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      this.students = this.students.filter((item) => { //Filter students based on current department filter
+        return (item.name.toLowerCase().indexOf(val.toLowerCase()) > -1); //Additional filter based on search value
       });
-      this.triggerAlphaScrollChange++;
+      this.triggerAlphaScrollChange++; //Update list
     }
   }
 
   getStudents() {
+    this.isLoading = true; //Show loading indicator
     this.dataOriginal = [];
-    this.http.get('http://127.0.0.1:3456/api/students')
-      .map(res => res.json())
-      .subscribe(res => {
+    this.http.get(this.apiUrl + 'api/students')
+      .map(res => res.json())  //Converts result to JSON
+      .subscribe(res => { 
         for (var i = 0; i < res.length; ++i) {
-          this.dataOriginal.push({
+          this.dataOriginal.push({ //Push data 
             student_id: res[i]._id,
             name: res[i].name,
             department: res[i].department,
@@ -148,32 +159,33 @@ export class StudentPage {
             selected: false
           });
         }
-        this.dataOriginal.sort((a, b) => {
+        this.dataOriginal.sort((a, b) => { //Sort data based on name [Alphabatically]
           if (a.name < b.name) return -1;
           else if (a.name > b.name) return 1;
           else return 0;
         })
-        this.students = this.getCurrentFilteredStudents()
-        this.triggerAlphaScrollChange++;
-      });
+        this.students = this.getCurrentFilteredStudents() //Aply filter based on department
+        this.triggerAlphaScrollChange++; 
+        this.isLoading = false; //Hide loading indicator
+    });
   }
 
   onItemClick(item) {
-    if (!this.isForRegister) {
+    if (!this.isForRegister) { //If student was for list of students, open student info page
       let itemPage = this.modCtrl.create(StudentInfoPage, { data: item });
       itemPage.present();
       itemPage.onDidDismiss(data => {
-        if (data === undefined || data === null) return;
-        this.getStudents();
+        if (data === undefined || data === null) return; 
+        this.getStudents(); //Update list
       });
     } else {
-      if(item.selected) ++this.totalSelected;
+      if(item.selected) ++this.totalSelected; //If page was for student registration, add 1 to total selected
       else --this.totalSelected;
     }
   }
 
-  onRegister() {
-    let alert = this.alertCtrl.create({
+  onRegister() { //Only called if for ifForRegister == true
+    let alert = this.alertCtrl.create({ //Shows alert Prompt to register selected students
       title: 'Register Student',
       message: "Register " + this.totalSelected + (this.totalSelected == 1 ? " student ? " : " students ?"),
       buttons: [
@@ -186,11 +198,11 @@ export class StudentPage {
         },
         {
           text: 'Register',
-          handler: () => {
-            var result =  this.dataOriginal.filter((item) => {
+          handler: () => { //Get new list of students who were selected
+            var result =  this.dataOriginal.filter((item) => { //is Student was selected
               return item.selected;
             });
-            this.viewCtrl.dismiss(result);
+            this.viewCtrl.dismiss(result); //Send back result to company_info page
           }
         }
       ]
@@ -199,6 +211,7 @@ export class StudentPage {
   }
 
 
+//Generates a ranom integer >= min and <= max
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
@@ -215,7 +228,7 @@ export class StudentPage {
   //       "rollno" : this.getRandomInt(0,100) + '',
   //       "cgpa" : this.getRandomInt(0,100)/10 + ''
   //     };
-  //     this.http.post("http://localhost:3456/api/students/add", JSON.stringify(data) , {headers : header}).subscribe(res => {
+  //     this.http.post(this.apiUrl + "api/students/add", JSON.stringify(data) , {headers : header}).subscribe(res => {
   //     });
   //   }
   // }

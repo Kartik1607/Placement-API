@@ -41,6 +41,13 @@
 </ion-header>
 <ion-content>
 
+  <ion-spinner *ngIf="isLoading" style="left:50%; top:5%"></ion-spinner>
+
+  <ion-item *ngIf='connectionStatus == "unknown" || connectionStatus == "none"'>
+                <ion-label center style="text-align:center">No internet connection available.</ion-label>
+                <ion-icon name="sad" item-left></ion-icon>
+  </ion-item>
+
 <ion-alpha-scroll *ngIf="students.length > 0"
   [listData]="students"
   key="name"

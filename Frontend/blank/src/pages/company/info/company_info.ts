@@ -20,16 +20,24 @@ export class CompanyInfoPage {
     };
 
     isInEditMode: boolean = false;
-
+    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+  
     students: {
         id: String,
         name: String,
         selected: boolean
     }[] = [];
 
+    isPast:boolean;
+
     constructor(public viewCtrl: ViewController, public navParams: NavParams, public modalCtrl: ModalController, public http: Http,
         public alertCtrl: AlertController) {
         this.data = navParams.get("data");
+        let today = new Date();
+        if(this.data.placement_date < today) 
+            this.isPast = true;
+        else 
+            this.isPast = false;
         this.loadStudents();
     }
 
@@ -70,7 +78,7 @@ export class CompanyInfoPage {
             return item.selected;
         });
         for (var i = 0; i < stu.length; ++i) {
-            this.http.delete("http://localhost:3456/api/students/register?cid=" + this.data.id + "&sid=" + stu[i].id)
+            this.http.delete(this.apiUrl + "api/students/register?cid=" + this.data.id + "&sid=" + stu[i].id)
                 .subscribe(res => {
                     console.log(res);
                 });
@@ -80,11 +88,11 @@ export class CompanyInfoPage {
     }
     loadStudents() {
         this.students = [];
-        this.http.get("http://localhost:3456/api/students/register?cid=" + this.data.id)
+        this.http.get(this.apiUrl + "api/students/register?cid=" + this.data.id)
             .map(res => res.json()).subscribe(res => {
                 for (var i = 0; i < res.length; ++i) {
                     let sid = res[i].student_Id;
-                    this.http.get("http://localhost:3456/api/students?id=" + sid)
+                    this.http.get(this.apiUrl + "api/students?id=" + sid)
                         .map(result => result.json())
                         .subscribe(result => {
                             //console.log(result);
@@ -116,7 +124,7 @@ export class CompanyInfoPage {
         student_page.onDidDismiss(res => {
             if (res === undefined || res === null) return;
             for (var i = 0; i < res.length; ++i) {
-                this.http.post("http://localhost:3456/api/students/register?cid=" + this.data.id + "&sid=" + res[i].student_id, "").subscribe(res => {
+                this.http.post(this.apiUrl + "api/students/register?cid=" + this.data.id + "&sid=" + res[i].student_id, "").subscribe(res => {
                     //console.log(res);
                 });
             }
@@ -127,7 +135,7 @@ export class CompanyInfoPage {
 
 
     deleteCompany() {
-        this.http.delete("http://localhost:3456/api/companies/register?cid=" + this.data.id).subscribe(res => {
+        this.http.delete(this.apiUrl + "api/companies/register?cid=" + this.data.id).subscribe(res => {
             if (res.status == 200) {
                 this.viewCtrl.dismiss({});
             }

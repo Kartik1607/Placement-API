@@ -22,13 +22,15 @@ export class CompanyPage {
         name: String,
         placement_date: Date,
     }[] = [];
-
+    
+    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
     dataOriginal = this.companys;
     upcoming_list = this.companys;
     past_list = this.companys;
     today: Date;
     upcoming_sorted: boolean = false;
     past_sorted: boolean = false;
+    isLoading: boolean = true;
 
     constructor(public navCtrl: NavController, public http: Http,  public popoverCtrl: PopoverController, public modCtrl : ModalController) {
         this.today = new Date();
@@ -42,11 +44,12 @@ export class CompanyPage {
     }
 
     getCompanies() {
+        this.isLoading = true;
         this.dataOriginal = [];
         this.upcoming_list = [];
         this.past_list = [];
         this.upcoming_sorted = this.past_sorted = false;
-        this.http.get('http://127.0.0.1:3456/api/companies')
+        this.http.get(this.apiUrl + 'api/companies')
             .map(res => res.json())
             .subscribe(res => {
                 for (var i = 0; i < res.length; ++i) {
@@ -73,6 +76,7 @@ export class CompanyPage {
                     else return 0;
                 });
                 this.upcoming_sorted = true;
+                this.isLoading = false;
             });
     }
 

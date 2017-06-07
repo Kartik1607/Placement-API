@@ -44,11 +44,11 @@
                     <h1><b>Student Details</b></h1>
                     <p>List of Registered Students</p>
 
-                    <button ion-button icon-only clear (click)="onRegisterPressed()" item-right color="dark" *ngIf="!isInEditMode">
+                    <button ion-button icon-only clear (click)="onRegisterPressed()" item-right color="dark" *ngIf="!isInEditMode && !isPast">
                         <ion-icon name="add"></ion-icon> 
                     </button>
 
-                    <button ion-button icon-only clear (click)="onEditPressed()" item-right color="dark" *ngIf="!isInEditMode">
+                    <button ion-button icon-only clear (click)="onEditPressed()" item-right color="dark" *ngIf="!isInEditMode && !isPast">
                         <ion-icon name="create"></ion-icon> 
                     </button>
 

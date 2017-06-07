@@ -34,7 +34,7 @@ export class StudentInfoPage {
         placement_date:Date
     }[] = [];
 
-
+    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
     today: Date;
     
     department_string: string = "";
@@ -97,9 +97,9 @@ export class StudentInfoPage {
     }
 
     deleteStudent(){
-        this.http.delete("http://localhost:3456/api/students/register?sid=" + this.student_data.student_id).subscribe(res => {
+        this.http.delete(this.apiUrl + "api/students/register?sid=" + this.student_data.student_id).subscribe(res => {
             if (res.status == 200) {
-                this.http.delete("http://localhost:3456/api/students/remove?id=" + this.student_data.student_id).subscribe(res => {
+                this.http.delete(this.apiUrl + "api/students/remove?id=" + this.student_data.student_id).subscribe(res => {
                     this.viewCtrl.dismiss({});
                 });
             }
@@ -110,12 +110,12 @@ export class StudentInfoPage {
         console.log("called");
         this.pastCompanies = [];
         this.upcomingCompanies = [];
-        this.http.get("http://localhost:3456/api/students/register?sid=" +this.student_data.student_id)
+        this.http.get(this.apiUrl + "api/students/register?sid=" +this.student_data.student_id)
         .map(res=>res.json())
         .subscribe(res=>{
             for(var i = 0 ; i < res.length ; ++i){
                 let cid = res[i].company_Id;
-                this.http.get("http://localhost:3456/api/companies?id="+cid).map(result=>result.json())
+                this.http.get(this.apiUrl + "api/companies?id="+cid).map(result=>result.json())
                 .subscribe(result=>{
                     console.log(result);
                     var company = result[0];

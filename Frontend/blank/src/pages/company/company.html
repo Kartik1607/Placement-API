@@ -17,7 +17,8 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <ion-list >
+  <ion-spinner *ngIf="isLoading"  style="left:50%; top:5%"></ion-spinner>
+  <ion-list *ngIf="!isLoading">
     <ion-list-header>
       Upcoming Placements
     </ion-list-header>
@@ -26,7 +27,7 @@
       <p>{{ getDateString(item.placement_date)}}</p>
   </button>
   </ion-list>
-  <ion-list >
+  <ion-list *ngIf="!isLoading">
     <ion-list-header>
       Past Placements
     </ion-list-header>

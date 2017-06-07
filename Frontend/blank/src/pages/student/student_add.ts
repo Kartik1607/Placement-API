@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
   templateUrl: 'student_add.html'
 })
 export class StudentAddPage {
+  apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
   department: String ;
   name: String;
   roll_number: Number ;
@@ -17,7 +18,7 @@ export class StudentAddPage {
 
   }
 
-  dismiss() {
+  dismiss() { //Back button
     this.viewCtrl.dismiss();
   }
 
@@ -51,7 +52,7 @@ export class StudentAddPage {
         "cgpa" : this.cgpa
       };
       console.log(JSON.stringify(data));
-      this.http.post("http://localhost:3456/api/students/add", JSON.stringify(data) , {headers : header}).subscribe(res => {
+      this.http.post(this.apiUrl + "api/students/add", JSON.stringify(data) , {headers : header}).subscribe(res => {
         if(res.status == 200){
           this.viewCtrl.dismiss({});
         }

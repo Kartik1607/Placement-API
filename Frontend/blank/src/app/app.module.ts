@@ -3,9 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { Http, HttpModule } from '@angular/http'
-
+import { Network } from "@ionic-native/network";
 import { StudentPage } from '../pages/student/student';
-import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { PopOverPage } from '../pages/student/popover'
 import { StudentAddPage } from '../pages/student/student_add'
@@ -23,7 +22,6 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
   declarations: [
     MyApp,
     StudentPage,
-    ContactPage,
     PopOverPage,
     StudentAddPage,
     StudentInfoPage,
@@ -43,7 +41,6 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
   entryComponents: [
     MyApp,
     StudentPage,
-    ContactPage,
     PopOverPage,
     StudentAddPage,
     StudentInfoPage,
@@ -56,6 +53,7 @@ import { IonAlphaScrollModule } from 'ionic2-alpha-scroll';
   providers: [
     StatusBar,
     SplashScreen,
+    Network,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

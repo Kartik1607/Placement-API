@@ -17,7 +17,8 @@ export class StudentInfoEditPage {
         cgpa: number
     };
 
-
+    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+  
     constructor(public viewCtrl: ViewController, public navParams: NavParams, public http: Http) {
         this.data = navParams.get("data");
     }
@@ -48,7 +49,7 @@ export class StudentInfoEditPage {
                 "cgpa": this.data.cgpa
             };
             console.log(JSON.stringify(data));
-            this.http.post("http://localhost:3456/api/students/update?id=" + this.data.student_id, JSON.stringify(data), { headers: header }).subscribe(res => {
+            this.http.post(this.apiUrl + "api/students/update?id=" + this.data.student_id, JSON.stringify(data), { headers: header }).subscribe(res => {
                 if (res.status == 200) {
                     this.viewCtrl.dismiss(this.data);
                 }
