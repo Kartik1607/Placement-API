@@ -78,7 +78,7 @@ app.get('/', function(req,res){
 }); 
 
 app.use(cors())
-app.listen(process.env.PORT);
+app.listen(process.env.OPENSHIFT_NODEJS_PORT || 8080);
 
 /* GET METHODS BELOW */
 
