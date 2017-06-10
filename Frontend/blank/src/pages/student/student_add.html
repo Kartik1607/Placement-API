@@ -8,6 +8,9 @@
             <ion-input type="text" maxlength="25" [(ngModel)] = "name" autofocus></ion-input>
         </ion-item>
 
+        <ion-item *ngIf='!hasValidName'>
+            <font size="2">Enter a valid name</font>
+        </ion-item>
 
         <ion-row>
             <ion-col>
@@ -15,11 +18,17 @@
                     <ion-label stacked>CGPA</ion-label>
                     <ion-input type="number" min="0" max="10" [(ngModel)] = "cgpa"></ion-input>
                 </ion-item>
+                <ion-item *ngIf='!hasValidCGPA'>
+                     <font size="2">Valid CGPA = 0-10</font>
+                </ion-item>
             </ion-col>
             <ion-col>
                 <ion-item>
                     <ion-label stacked>Roll number</ion-label>
                     <ion-input type="number" [(ngModel)] = "roll_number"></ion-input>
+                </ion-item>
+                <ion-item *ngIf='!hasValidRollNo'>
+                     <font size="2">Enter a valid Roll Number</font>
                 </ion-item>
             </ion-col>
         </ion-row>
@@ -36,6 +45,10 @@
                 <ion-option value="EEE">EEE</ion-option>
                 <ion-option value="ECE">ECE</ion-option>
             </ion-select>
+        </ion-item>
+
+        <ion-item *ngIf='!hasValidDepartment'>
+             <font size="2">Select a department</font>
         </ion-item>
 
 

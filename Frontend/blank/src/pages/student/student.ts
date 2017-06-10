@@ -13,7 +13,7 @@ import 'rxjs/add/operator/map';
 })
 export class StudentPage {
 
-  apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/"; //URL of Backend server host
+  apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/"; //URL of Backend server host
   isForRegister: boolean = false; 
   currentPageClass = this;
   alphaScrollItemTemplate: string = ``;

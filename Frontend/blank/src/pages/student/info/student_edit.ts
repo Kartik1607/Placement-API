@@ -17,7 +17,7 @@ export class StudentInfoEditPage {
         cgpa: number
     };
 
-    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+    apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/";
   
     constructor(public viewCtrl: ViewController, public navParams: NavParams, public http: Http) {
         this.data = navParams.get("data");
@@ -48,7 +48,7 @@ export class StudentInfoEditPage {
                 "rollno": this.data.roll_number,
                 "cgpa": this.data.cgpa
             };
-            console.log(JSON.stringify(data));
+            //Saves students by using update
             this.http.post(this.apiUrl + "api/students/update?id=" + this.data.student_id, JSON.stringify(data), { headers: header }).subscribe(res => {
                 if (res.status == 200) {
                     this.viewCtrl.dismiss(this.data);

@@ -10,8 +10,9 @@ import 'rxjs/add/operator/map';
 export class CompanyAddPage {
     name: String;
     placement_date: String = new Date().toISOString();
-    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
-  
+    apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/";
+    hasValidName: boolean = true;
+    hasValidDate: boolean = true;
     constructor(public viewCtrl: ViewController, public http: Http) {
     }
 
@@ -20,12 +21,14 @@ export class CompanyAddPage {
     }
 
 
-    saveStudent() {
-        var validate = true;
+    saveCompany() { //Saves company to mongodb
+        var validate = this.hasValidDate = this.hasValidName = true;
         if (this.name === undefined || this.name === null || this.name.length == 0) {
+            this.hasValidName = false;
             validate = false;
         }
-        if (this.placement_date === undefined || this.placement_date === null) {
+        if (this.placement_date === undefined || this.placement_date === null || ) {
+            this.hasValidDate = false;
             validate = false;
         }
         if (!validate) return;
@@ -33,18 +36,14 @@ export class CompanyAddPage {
         header.append("content-type", "application/json")
         var dateArray = this.placement_date.split('-');
         dateArray[2] = (dateArray[2].split('T'))[0];
-       // console.log(this.placement_date);
-       // console.log(dateArray);
         let data = {
             "name": this.name,
             "placement_date": dateArray[1] + "-" + dateArray[2] + "-" + dateArray[0]
         };
-
-     //   console.log(JSON.stringify(data));
-        
+    
         this.http.post(this.apiUrl + "api/companies/register", JSON.stringify(data), { headers: header }).subscribe(res => {
             console.log(res);
-            if (res.status == 200) {
+            if (res.status == 200) { //If saved successfully, dismiss the current view.
                 this.viewCtrl.dismiss({});
             }
         });

@@ -23,7 +23,7 @@ export class CompanyPage {
         placement_date: Date,
     }[] = [];
     
-    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+    apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/";
     dataOriginal = this.companys;
     upcoming_list = this.companys;
     past_list = this.companys;
@@ -43,14 +43,14 @@ export class CompanyPage {
         this.navCtrl.pop();
     }
 
-    getCompanies() {
+    getCompanies() { //Gets list of all companies and assigns them to proper list
         this.isLoading = true;
         this.dataOriginal = [];
         this.upcoming_list = [];
         this.past_list = [];
         this.upcoming_sorted = this.past_sorted = false;
-        this.http.get(this.apiUrl + 'api/companies')
-            .map(res => res.json())
+        this.http.get(this.apiUrl + 'api/companies') //Gets list of all companies
+            .map(res => res.json()) //Converts to JSON
             .subscribe(res => {
                 for (var i = 0; i < res.length; ++i) {
                     this.dataOriginal.push({
@@ -58,13 +58,13 @@ export class CompanyPage {
                         name: res[i].name,
                         placement_date: this.getDate(res[i].placement_date)
                     });
-                    if (this.dataOriginal[i].placement_date < this.today) {
+                    if (this.dataOriginal[i].placement_date < this.today) { //Adds company to correct list based on today date
                         this.past_list.push(this.dataOriginal[i]);
                     } else {
                         this.upcoming_list.push(this.dataOriginal[i]);
                     }
                 }
-                this.past_list.sort((a, b) => {
+                this.past_list.sort((a, b) => { //Sorts by date
                     if (a.placement_date < b.placement_date) return -1;
                     else if (a.placement_date > b.placement_date) return 1;
                     else return 0;
@@ -80,27 +80,27 @@ export class CompanyPage {
             });
     }
 
-    getDate(date: String): Date {
+    getDate(date: String): Date { //Converts string to date
         var d_Array = date.split("-");
         var d = new Date(+d_Array[2], +d_Array[0] - 1, +d_Array[1]);
         return d;
     }
 
-    itemSelected(item) {
-        let c_info = this.modCtrl.create(CompanyInfoPage, {data : item});
+    itemSelected(item) { 
+        let c_info = this.modCtrl.create(CompanyInfoPage, {data : item}); //Shows company info page
         c_info.onDidDismiss(data=>{
-            if(data === undefined || data === null) return;
-            this.getCompanies();
+            if(data === undefined || data === null) return; 
+            this.getCompanies(); //Synchronize companies list again
         });
         c_info.present();
     }
 
-    getDateString(date: Date): String {
+    getDateString(date: Date): String { //Formats date for readability
         return date.getDate() + " " + this.monthNames[date.getMonth()] + " " + date.getFullYear();
     }
 
     onAddPressed(){
-        let companyaddpage = this.popoverCtrl.create(CompanyAddPage);
+        let companyaddpage = this.popoverCtrl.create(CompanyAddPage); //Shows popup to register company
         companyaddpage.present();
         companyaddpage.onDidDismiss(data => {
             if(data === undefined || data === null) return;

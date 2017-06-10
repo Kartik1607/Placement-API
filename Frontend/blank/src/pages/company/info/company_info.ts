@@ -20,7 +20,7 @@ export class CompanyInfoPage {
     };
 
     isInEditMode: boolean = false;
-    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+    apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/";
   
     students: {
         id: String,
@@ -34,7 +34,7 @@ export class CompanyInfoPage {
         public alertCtrl: AlertController) {
         this.data = navParams.get("data");
         let today = new Date();
-        if(this.data.placement_date < today) 
+        if(this.data.placement_date < today)  //Is placement for current company past today? If past, then edit,add button are hidden
             this.isPast = true;
         else 
             this.isPast = false;
@@ -49,6 +49,7 @@ export class CompanyInfoPage {
         this.isInEditMode = false;
     }
 
+//Unregisters selected students from company placement
     onUnregisterPressed() {
         let alert = this.alertCtrl.create({
             title: 'Confirm Unregistration',
@@ -73,29 +74,34 @@ export class CompanyInfoPage {
 
     }
 
+//Remove student/s from company placement event
     deleteStudents() {
-        let stu = this.students.filter(item => {
+        let stu = this.students.filter(item =>  {//Gets list of selected students to remove
             return item.selected;
         });
+        var deleted = 0;
         for (var i = 0; i < stu.length; ++i) {
             this.http.delete(this.apiUrl + "api/students/register?cid=" + this.data.id + "&sid=" + stu[i].id)
-                .subscribe(res => {
-                    console.log(res);
-                });
+                .subscribe(res => {   
+                    ++deleted;
+                    if(deleted == stu.length){
+                         this.loadStudents(); //Synchronize after deleting
+                         this.isInEditMode = false;
+                    }
+             });
         }
-        this.loadStudents();
-        this.isInEditMode = false;
+       
     }
-    loadStudents() {
+
+    loadStudents() { //Gets list of students registered
         this.students = [];
         this.http.get(this.apiUrl + "api/students/register?cid=" + this.data.id)
             .map(res => res.json()).subscribe(res => {
                 for (var i = 0; i < res.length; ++i) {
                     let sid = res[i].student_Id;
-                    this.http.get(this.apiUrl + "api/students?id=" + sid)
+                    this.http.get(this.apiUrl + "api/students?id=" + sid) //Gets name of all students
                         .map(result => result.json())
                         .subscribe(result => {
-                            //console.log(result);
                             this.students.push({
                                 id: sid,
                                 name: result[0].name,
@@ -115,7 +121,7 @@ export class CompanyInfoPage {
     }
 
     onRegisterPressed() {
-        let student_page = this.modalCtrl.create(StudentPage, {
+        let student_page = this.modalCtrl.create(StudentPage, { //Unlike student list , ion-checkbox is added as additional component for multi-select
             isRegister: true, listTemplate: `
         <ion-item >
             <ion-label>{{item.name}}</ion-label>
@@ -133,7 +139,7 @@ export class CompanyInfoPage {
         student_page.present();
     }
 
-
+//Unregisters company from placement event.
     deleteCompany() {
         this.http.delete(this.apiUrl + "api/companies/register?cid=" + this.data.id).subscribe(res => {
             if (res.status == 200) {
@@ -142,6 +148,7 @@ export class CompanyInfoPage {
         });
     }
 
+//Shows alert to confirm deletion.
     onDeletePressed() {
         let alert = this.alertCtrl.create({
             title: 'Confirm Unregistration',

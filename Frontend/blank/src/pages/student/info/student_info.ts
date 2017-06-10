@@ -34,7 +34,7 @@ export class StudentInfoPage {
         placement_date:Date
     }[] = [];
 
-    apiUrl:String = "http://nagarroplacement.eu-3.evennode.com/";
+    apiUrl:String = "http://placement-placement.7e14.starter-us-west-2.openshiftapps.com/";
     today: Date;
     
     department_string: string = "";
@@ -63,18 +63,18 @@ export class StudentInfoPage {
     }
 
     onEditPressed() {
-        let temp_data = Object.assign({},this.student_data);
-        let edit_page = this.popCtrl.create(StudentInfoEditPage,{data : temp_data});
+        let temp_data = Object.assign({},this.student_data); //Creates a full copy of data instead of reference.
+        let edit_page = this.popCtrl.create(StudentInfoEditPage,{data : temp_data}); //Show popup to edit page
         edit_page.present();
         edit_page.onDidDismiss(data=>{
-            if(data === null) return;
-            this.student_data = data;
-            this.setDepartmentString();    
+            if(data === null) return; //If popup was dismissed, make no changes
+            this.student_data = data; //Change data
+            this.setDepartmentString(); //Reset the string 
         });
     }
 
     onDeletePressed(){
-        let alert = this.alertCtrl.create({
+        let alert = this.alertCtrl.create({ //Shows alert as deletion cant be undone.
             title:'Confirm Deletion',
             message:'Do you want to remove this student?',
             buttons: [
@@ -88,7 +88,7 @@ export class StudentInfoPage {
                 {
                     text: 'Delete',
                     handler: () =>{
-                        this.deleteStudent();
+                        this.deleteStudent(); //If delete was pressed, calls delete function
                     }
                 }
             ]
@@ -96,31 +96,30 @@ export class StudentInfoPage {
         alert.present();
     }
 
-    deleteStudent(){
+
+    deleteStudent(){ //Deletes the current selected student.
         this.http.delete(this.apiUrl + "api/students/register?sid=" + this.student_data.student_id).subscribe(res => {
-            if (res.status == 200) {
+            if (res.status == 200) {//If deletion was successful dismiss the current view
                 this.http.delete(this.apiUrl + "api/students/remove?id=" + this.student_data.student_id).subscribe(res => {
-                    this.viewCtrl.dismiss({});
+                    this.viewCtrl.dismiss({}); 
                 });
             }
         });
     }
 
     getCompanies(){
-        console.log("called");
-        this.pastCompanies = [];
+        this.pastCompanies = []; //Remove all current data
         this.upcomingCompanies = [];
-        this.http.get(this.apiUrl + "api/students/register?sid=" +this.student_data.student_id)
-        .map(res=>res.json())
+        this.http.get(this.apiUrl + "api/students/register?sid=" +this.student_data.student_id) //Gets list of all companies
+        .map(res=>res.json()) //Convert to JSON
         .subscribe(res=>{
             for(var i = 0 ; i < res.length ; ++i){
-                let cid = res[i].company_Id;
-                this.http.get(this.apiUrl + "api/companies?id="+cid).map(result=>result.json())
+                let cid = res[i].company_Id; //Gets mongoId of company
+                this.http.get(this.apiUrl + "api/companies?id="+cid).map(result=>result.json()) //Gets info of company based on ID and convert to JSON
                 .subscribe(result=>{
-                    console.log(result);
                     var company = result[0];
                     let iDate = this.getDate(company.placement_date);
-                    if(iDate < this.today){
+                    if(iDate < this.today){ //Adds company to correct list based on today date
                         this.pastCompanies.push({
                             company_id : cid,
                             name : company.name,
@@ -138,13 +137,13 @@ export class StudentInfoPage {
         });
     }
 
-    getDate(date: String): Date {
+    getDate(date: String): Date { //Convers String to date
         var d_Array = date.split("-");
         var d = new Date(+d_Array[2], +d_Array[0] - 1, +d_Array[1]);
         return d;
     }
 
-     getDateString(date: Date): String {
+     getDateString(date: Date): String { //Formats date for better readability
         return date.getDate() + " " + this.monthNames[date.getMonth()] + " " + date.getFullYear();
     }
 }
